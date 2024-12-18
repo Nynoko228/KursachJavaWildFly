@@ -2,6 +2,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "roles")
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -9,7 +10,7 @@ public class Role {
 
     private String role_name;  // Название роли (например, "employee", "customer", "director")
 
-    @ManyToMany(mappedBy = "roles")  // Связь с User (обратная связь)
+    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL, fetch = FetchType.LAZY)  // Связь с User (обратная связь)
     private List<User> users;
 
     // Геттеры и сеттеры

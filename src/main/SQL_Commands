@@ -16,11 +16,7 @@ FROM student s
 JOIN mail m ON s.student_id = m.student_id;
 
 
-DO $$
-DECLARE
-    r RECORD;
-BEGIN
-    FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public') LOOP
-        EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
-    END LOOP;
-END $$;
+TRUNCATE TABLE security_user_role RESTART IDENTITY CASCADE;
+TRUNCATE TABLE roles RESTART IDENTITY CASCADE;
+TRUNCATE TABLE users RESTART IDENTITY CASCADE;
+

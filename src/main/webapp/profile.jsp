@@ -8,20 +8,16 @@
     <title>Приветственная страница</title>
 </head>
 <body>
-    <%
-        HttpServletRequest request = (HttpServletRequest) session.getAttribute("javax.servlet.http.HttpServletRequest");
-        if (request.getUserPrincipal() != null) {
-    %>
+<% HttpServletRequest httpRequest = (HttpServletRequest) session.getAttribute("javax.servlet.http.HttpServletRequest"); %>
+<% if (request.getUserPrincipal() != null) { %>
         <h1>Добро пожаловать, <%= request.getUserPrincipal().getName() %>!</h1>
         <p>Вы успешно авторизованы на странице профиля.</p>
-        <!-- Можно добавить ссылку на выход из системы -->
-        <form action="logout" method="POST">
-            <a href="/Kursach/logout"><button type="button">Выйти</button></a>
+        <!-- Форма для выхода из системы -->
+        <form action="/Kursach/logout" method="POST">
+            <button type="submit">Выйти</button>
         </form>
-    <%
-        } else {
-            response.sendRedirect("/base"); // Перенаправление на страницу авторизации
-        }
-    %>
+<% } else {
+    response.sendRedirect("/base"); // Перенаправление на страницу авторизации
+} %>
 </body>
 </html>

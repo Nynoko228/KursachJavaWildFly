@@ -19,36 +19,43 @@ public class TestServiceBean {
     private EntityManager entityManager;
 
     public String addUserWithRole(String username, String password, String roleName) {
-        // Проверяем, существует ли пользователь с таким именем
-        TypedQuery<User> query = entityManager.createQuery(
-                "SELECT u FROM User u WHERE u.user_name = :username", User.class);
-        query.setParameter("username", username);
+        try {
+            // Проверяем, существует ли пользователь с таким именем
+            TypedQuery<User> userQuery = entityManager.createQuery(
+                    "SELECT u FROM User u WHERE u.user_name = :username", User.class);
+            userQuery.setParameter("username", username);
 
-        List<User> existingUsers = query.getResultList();
+            List<User> existingUsers = userQuery.getResultList();
 
+            if (!existingUsers.isEmpty()) {
+                return "Имя пользователя уже занято"; // Возвращаем сообщение вместо исключения
+            }
 
-        if (!query.getResultList().isEmpty()) {
-            return "Имя пользователя уже занято"; // Возвращаем сообщение вместо исключения
+            // Создаем нового пользователя
+            User user = new User();
+            user.setUser_name(username);
+            user.setPassword(hashPassword(password));  // Хешируем пароль
+            System.out.println("Password hash: " + hashPassword(password));
+
+            // Создаем роль
+            Role role = new Role();
+            role.setRole_name(roleName);
+
+            // Добавляем роль в список ролей пользователя
+            user.setRoles(new ArrayList<>());
+            user.getRoles().add(role);
+
+            // Сохраняем роль в базе данных
+            entityManager.persist(role);  // Сначала сохраняем роль, если она еще не существует
+
+            // Сохраняем пользователя в базе данных
+            entityManager.persist(user);  // Затем сохраняем пользователя
+
+            return "Пользователь успешно зарегистрирован";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Ошибка при регистрации пользователя: " + e.getMessage();
         }
-
-
-        // Создаем нового пользователя
-        User user = new User();
-        user.setUser_name(username);
-        user.setPassword(hashPassword(password));  // Хешируем пароль
-
-        // Создаем роль
-        Role role = new Role();
-        role.setRole_name(roleName);
-
-        // Добавляем роль в список ролей пользователя
-        user.setRoles(new ArrayList<>());
-        user.getRoles().add(role);
-
-        // Сохраняем пользователя и роль в базе данных
-        entityManager.persist(role);  // Сначала сохраняем роль, если она еще не существует
-        entityManager.persist(user);  // Затем сохраняем пользователя
-        return "Пользователь успешно зарегистрирован";
     }
 
     public void delUser(long student_id){

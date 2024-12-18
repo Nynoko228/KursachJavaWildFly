@@ -18,7 +18,8 @@ public class ProfileServlet extends HttpServlet {
             response.sendRedirect("/base");  // Перенаправление на страницу авторизации
         } else {
             // Передаем имя пользователя на профильную страницу
-            request.setAttribute("user_name", principal.getName());
+            System.out.println("User Name: " + principal.getName());
+            request.setAttribute("username", principal.getName());
             request.getRequestDispatcher("profile.jsp").forward(request, response);
         }
     }

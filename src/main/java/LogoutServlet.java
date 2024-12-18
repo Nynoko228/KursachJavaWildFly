@@ -7,8 +7,10 @@ import java.io.IOException;
 
 @WebServlet("/logout")
 public class LogoutServlet extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getSession().invalidate(); // Закрываем сессию
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Завершаем сессию пользователя
+        request.getSession().invalidate();
+        // Перенаправляем пользователя на страницу авторизации
         response.sendRedirect("/Kursach/base");
     }
 }
