@@ -65,6 +65,7 @@
             padding: 20px;
             border: 1px solid #888;
             width: 50%;
+            border-radius: 15px;
         }
         .close {
             color: #aaa;
@@ -77,6 +78,11 @@
             color: black;
             text-decoration: none;
             cursor: pointer;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -114,29 +120,12 @@
                 <option value="customer">Customer</option>
                 <option value="director">Director</option>
             </select><br><br>
-            <button type="submit" name="submitAction" value="reg">Зарегистрироваться</button>
+            <div class="button-container">
+                <button type="submit" name="submitAction" value="reg">Зарегистрироваться</button>
+            </div>
         </form>
     </div>
 </div>
-
-
-
-<!-- Всплывающее окно для авторизации -->
-<!--
-<div id="authorization" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('authorization')">&times;</span>
-        <h2>Вход в профиль</h2>
-        <form action="base" method="post">
-            <label for="modalName">Имя:</label>
-            <input type="text" id="modalName" name="name" required><br><br>
-            <label for="modaPswd">Пароль:</label>
-            <input type="password" id="modaPswd" name="pswd" required><br><br>
-            <button type="submit" name="submitAction" value="auth">Войти</button>
-        </form>
-    </div>
-</div>
-//-->
 
 <script>
     // Функция для закрытия модального окна

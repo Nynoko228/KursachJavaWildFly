@@ -282,6 +282,9 @@
                     <realm name="local"/>
                     <realm name="Test" role-decoder="groups-to-roles"/>
                 </security-domain>
+                <security-domain name="TestDomain" default-realm="Test" permission-mapper="default-permission-mapper">
+                    <realm name="Test" role-decoder="groups-to-roles"/>
+                </security-domain>
             </security-domains>
             <security-realms>
                 <identity-realm name="local" identity="$local"/>
@@ -522,6 +525,7 @@
             </server>
             <servlet-container name="default">
                 <jsp-config/>
+                <session-cookie http-only="true" secure="true"/>
                 <websockets/>
             </servlet-container>
             <handlers>
@@ -565,7 +569,7 @@
     </socket-binding-group>
     <deployments>
         <deployment name="Kursach.war" runtime-name="Kursach.war">
-            <content sha1="1323cc530a1628b1a7b0f551353bc721935ac769"/>
+            <content sha1="df53fadcbc0d6d5af8943e250cac221c622c42a2"/>
         </deployment>
     </deployments>
 </server>
