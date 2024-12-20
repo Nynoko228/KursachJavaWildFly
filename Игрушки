@@ -1,0 +1,23 @@
+INSERT INTO games (name, year_creation, genre, cost) VALUES
+('The Legend of Zelda: Breath of the Wild', '2017-03-03', 'Action-adventure', 59.99),
+('God of War', '2018-04-20', 'Action-adventure', 49.99),
+('The Witcher 3: Wild Hunt', '2015-05-19', 'Action RPG', 39.99),
+('Dark Souls III', '2016-03-24', 'Action RPG', 39.99),
+('Red Dead Redemption 2', '2018-10-26', 'Action-adventure', 59.99),
+('Super Mario Odyssey', '2017-10-27', 'Platformer', 59.99),
+('Persona 5', '2016-09-15', 'JRPG', 59.99),
+('Overwatch', '2016-05-24', 'First-person shooter', 39.99),
+('Minecraft', '2011-11-18', 'Sandbox', 26.95),
+('Fortnite', '2017-07-25', 'Battle Royale', 0.00),
+('Apex Legends', '2019-02-04', 'Battle Royale', 0.00),
+('Hollow Knight', '2017-02-24', 'Metroidvania', 14.99),
+('Celeste', '2018-01-25', 'Platformer', 19.99),
+('Stardew Valley', '2016-02-26', 'Simulation', 14.99),
+('DOOM Eternal', '2020-03-20', 'First-person shooter', 59.99),
+('Sekiro: Shadows Die Twice', '2019-03-22', 'Action-adventure', 59.99),
+('Monster Hunter: World', '2018-01-26', 'Action RPG', 59.99),
+('Final Fantasy VII Remake', '2020-04-10', 'JRPG', 59.99),
+('Gears 5', '2019-09-10', 'Third-person shooter', 39.99),
+('Assassins Creed Odyssey', '2018-10-05', 'Action RPG', 59.99);
+
+замени тока название таблицы и колонок)))
