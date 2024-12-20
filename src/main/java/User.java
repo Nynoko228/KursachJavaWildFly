@@ -4,8 +4,9 @@ import java.util.List;
 @Entity
 @Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "user_name"))
 public class User {
+
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long user_id;
 
     @Column(name = "user_name", nullable = false, unique = true)
@@ -14,42 +15,46 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @ManyToMany
-    @JoinTable(name = "security_user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    public List<Role> roles;
+    @ManyToOne(fetch = FetchType.EAGER) // Изменено на ManyToOne, чтобы у пользователя была только одна роль
+    @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false) // Колонка для внешнего ключа
+    private Role role;
 
-    User(String user_name) {
+    public User() {
+        // Конструктор по умолчанию необходим для JPA
+    }
+
+    public User(String user_name) {
         this.user_name = user_name;
     }
 
-    public long getUser_id() {
-        return user_id;
+    public User(String user_name, String password, Role role) {
+        this.user_name = user_name;
+        this.password = password;
+        this.role = role;
     }
 
-//    public List<mail> getMails() {
-//        return mails;
-//    }
+    public Long getUser_id() {
+        return user_id;
+    }
 
     public String getUser_name() {
         return user_name;
     }
 
-    public void setId(Long id) {
-        this.user_id = id;
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public void setUser_id(long user_id) {
-        this.user_id = user_id;
-    }
-
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public Long getId() {
@@ -60,16 +65,7 @@ public class User {
         return password;
     }
 
-    public List<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
-
-
-
-    public User() {}
 }

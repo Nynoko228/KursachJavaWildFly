@@ -32,11 +32,18 @@
             font-size: 16px;
             cursor: pointer;
             background-color: #007bff;
-            border: none;
+            border: 1px solid #ccc;
+            border-radius: 15px;
             color: white;
         }
         button:hover {
             background-color: #0056b3;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 3%;
         }
     </style>
 </head>
@@ -48,9 +55,11 @@
 
         <label for="password">Пароль:</label>
         <input type="password" id="password" name="j_password" required>
-
-        <button type="submit">Войти</button>
-        <a href="/Kursach/base"><button type="button">Назад</button></a>
+        <div class="button-container">
+            <button type="submit">Войти</button>
+            <a href="/Kursach/base"><button type="button">Назад</button></a>
+        </div>
     </form>
 </body>
 </html>
+

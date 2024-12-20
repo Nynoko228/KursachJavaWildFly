@@ -10,8 +10,6 @@ public class Role {
 
     private String role_name;  // Название роли (например, "employee", "customer", "director")
 
-    @ManyToMany(mappedBy = "roles", cascade = CascadeType.ALL, fetch = FetchType.LAZY)  // Связь с User (обратная связь)
-    private List<User> users;
 
     // Геттеры и сеттеры
     public long getRole_id() {
@@ -30,11 +28,11 @@ public class Role {
         this.role_name = role_name;
     }
 
-    public List<User> getUsers() {
-        return users;
-    }
+//    public List<User> getUsers() {
+//        return users;
+//    }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
+//    public void setUsers(List<User> users) {
+//        this.users = users;
+//    }
 }

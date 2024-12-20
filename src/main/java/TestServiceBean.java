@@ -38,12 +38,21 @@ public class TestServiceBean {
             System.out.println("Password hash: " + hashPassword(password));
 
             // Создаем роль
-            Role role = new Role();
-            role.setRole_name(roleName);
+            // Получаем роль или создаем новую
+            Role role = entityManager.createQuery("SELECT r FROM Role r WHERE r.role_name = :roleName", Role.class)
+                    .setParameter("roleName", roleName)
+                    .getResultStream()
+                    .findFirst()
+                    .orElseGet(() -> {
+                        Role newRole = new Role();
+                        newRole.setRole_name(roleName);
+                        entityManager.persist(newRole);
+                        return newRole;
+                    });
+//            role.setRole_name(roleName);
 
             // Добавляем роль в список ролей пользователя
-            user.setRoles(new ArrayList<>());
-            user.getRoles().add(role);
+            user.setRole(role);
 
             // Сохраняем роль в базе данных
             entityManager.persist(role);  // Сначала сохраняем роль, если она еще не существует

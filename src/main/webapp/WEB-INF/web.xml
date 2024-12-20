@@ -22,12 +22,14 @@
     </web-resource-collection>
     <auth-constraint>
       <role-name>employee</role-name>
+      <role-name>director</role-name>
     </auth-constraint>
   </security-constraint>
 
 
   <security-role>
     <role-name>employee</role-name>
+    <role-name>director</role-name>
   </security-role>
   <display-name>Archetype Created Web Application</display-name>
 </web-app>
