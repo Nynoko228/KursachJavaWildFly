@@ -569,7 +569,7 @@
     </socket-binding-group>
     <deployments>
         <deployment name="Kursach.war" runtime-name="Kursach.war">
-            <content sha1="56250d33bd3381118b04661bf3391c05f86e3e85"/>
+            <content sha1="49add702b47dd6e9e509384a520ecda607edb9c4"/>
         </deployment>
     </deployments>
 </server>

@@ -32,7 +32,7 @@
             font-size: 16px;
             cursor: pointer;
             background-color: #007bff;
-            border: 1px solid #ccc;
+            border: 1px solid transparent;
             border-radius: 15px;
             color: white;
         }

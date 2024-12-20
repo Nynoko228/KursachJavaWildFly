@@ -6,6 +6,7 @@ import java.util.List;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "role_id")
     private long role_id;
 
     private String role_name;  // Название роли (например, "employee", "customer", "director")

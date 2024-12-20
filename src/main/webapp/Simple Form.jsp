@@ -44,6 +44,12 @@
             margin: 5px;
             cursor: pointer;
             border-radius: 15px;
+            color: white;
+            border: 1px solid transparent;
+            background-color: #007bff;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
         .button-container {
             display: flex;
@@ -91,6 +97,16 @@
           justify-content: center; /* Выравнивание по горизонтали */
           align-items: center;    /* Выравнивание по вертикали (опционально, если нужно по центру экрана) */
         }
+        .container form {
+        display: flex;
+        flex-direction: column;
+        }
+        .container label, .container input, .container select {
+        margin-bottom: 5px; /* Добавляем небольшой отступ снизу для красоты /
+         }
+         .button-container {
+         display: flex; justify-content: center; / выравнивание по центру */
+         }
     </style>
 </head>
 <body>
@@ -119,9 +135,9 @@
           <div class="container">
             <form action="base" method="post">
               <label for="modalName">Имя:</label>
-              <input type="text" id="modalName" name="name" required><br><br>
+              <input type="text" id="modalName" name="name" required>
               <label for="modaPswd">Пароль:</label>
-              <input type="password" id="modaPswd" name="pswd" required><br><br>
+              <input type="password" id="modaPswd" name="pswd" required>
               <label for="role">Роль:</label>
               <select id="role" name="role" required>
                 <option value="employee">Employee</option>

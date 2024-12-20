@@ -1,4 +1,5 @@
 import javax.persistence.*;
+import java.sql.Date;
 
 @Entity
 @Table(name = "games") // Название таблицы в БД
@@ -12,7 +13,7 @@ public class Game {
     private String name;
 
     @Column(nullable = false) // Год выпуска не может быть пустым
-    private int releaseYear;
+    private Date release_date;
 
     @Column(nullable = false) // Создатель не может быть пустым
     private String developer;
@@ -28,9 +29,9 @@ public class Game {
         // Пустой конструктор необходим для JPA
     }
 
-    public Game(String name, int releaseYear, String developer, String genre) {
+    public Game(String name, Date release_date, String developer, String genre) {
         this.name = name;
-        this.releaseYear = releaseYear;
+        this.release_date = release_date;
         this.developer = developer;
         this.genre = genre;
     }
@@ -52,12 +53,12 @@ public class Game {
         this.name = name;
     }
 
-    public int getReleaseYear() {
-        return releaseYear;
+    public Date getRelease_date() {
+        return release_date;
     }
 
-    public void setReleaseYear(int releaseYear) {
-        this.releaseYear = releaseYear;
+    public void setRelease_date(Date release_date) {
+        this.release_date = release_date;
     }
 
     public String getDeveloper() {

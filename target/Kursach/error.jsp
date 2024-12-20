@@ -8,6 +8,6 @@
 <body>
 <h1>Error</h1>
 <p>${errorMessage}</p>
-<a href="/studentForm.html">Go back</a>
+<a href="/base">Go back</a>
 </body>
 </html>

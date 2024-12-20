@@ -1,6 +1,7 @@
 LogoutServlet.class
 ProfileServlet.class
 TestServiceBean.class
+GamesTableServlet.class
 LoginServlet.class
 User.class
 Game.class
