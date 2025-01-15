@@ -116,6 +116,7 @@
         <button type="button" onclick="openModal('registration')">Зарегистрироваться</button>
         <!--<button type="button" onclick="document.getElementById('authorization').style.display='block'">Авторизоваться</button>-->
         <button type="submit" name="submitAction" value="auth">Авторизоваться</button>
+        <button type="submit" name="submitAction" value="catalog">Каталог</button>
     </div>
 </form>
 

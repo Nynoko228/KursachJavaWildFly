@@ -1,10 +1,10 @@
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "games") // Название таблицы в БД
 public class Game {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,19 +21,22 @@ public class Game {
     @Column(nullable = false) // Жанр не может быть пустым
     private String genre;
 
-    @Column(nullable = false) // Жанр не может быть пустым
-    private String cost;
+    @Column(nullable = false) // Цена не может быть пустой
+    private Double cost; // Изменили тип на Double
 
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Purchase> purchases;
 
     public Game() {
         // Пустой конструктор необходим для JPA
     }
 
-    public Game(String name, Date release_date, String developer, String genre) {
+    public Game(String name, Date release_date, String developer, String genre, Double cost) {
         this.name = name;
         this.release_date = release_date;
         this.developer = developer;
         this.genre = genre;
+        this.cost = cost;
     }
 
     // Геттеры и сеттеры для всех полей
@@ -77,11 +80,19 @@ public class Game {
         this.genre = genre;
     }
 
-    public String getCost() {
+    public Double getCost() {
         return cost;
     }
 
-    public void setCost(String cost) {
+    public void setCost(Double cost) {
         this.cost = cost;
+    }
+
+    public Set<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(Set<Purchase> purchases) {
+        this.purchases = purchases;
     }
 }

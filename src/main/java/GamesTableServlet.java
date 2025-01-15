@@ -7,7 +7,9 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet("/games")
 public class GamesTableServlet extends HttpServlet {
@@ -20,7 +22,7 @@ public class GamesTableServlet extends HttpServlet {
         try {
             List<Game> games = em.createQuery("SELECT g FROM Game g", Game.class).getResultList();
             System.out.println("Список игр size: " + games.size());
-            games.forEach(game -> System.out.println(game.getName()));
+//            games.forEach(game -> System.out.println(game.getName()));
             request.setAttribute("games", games);
             request.getRequestDispatcher("/games_table.jsp").forward(request, response);
         } catch (Exception e){
@@ -30,7 +32,18 @@ public class GamesTableServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Здесь можно будет обработать post-запросы (например, на добавление или удаление записи)
-        response.sendRedirect(request.getContextPath() + "/base");
+        HttpSession session = request.getSession(true); // Создаем сессию, если она не существует
+        Long gameId = Long.parseLong(request.getParameter("gameId"));
+
+        Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new HashMap<>();
+        }
+
+        cart.put(gameId, cart.getOrDefault(gameId, 0) + 1);
+        session.setAttribute("cart", cart);
+        System.out.println("Список игр cart: " + cart);
+
+        response.sendRedirect(request.getContextPath() + "/games");
     }
 }

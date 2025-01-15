@@ -49,6 +49,8 @@ public class BaseServlet extends HttpServlet {
             dispatcher.forward(req, resp);
         } else if ("auth".equals(action)) {
             resp.sendRedirect(req.getContextPath() + "/profile");
+        } else if ("catalog".equals(action)) {
+            resp.sendRedirect(req.getContextPath() + "/games");
         } else {
             resp.sendRedirect(req.getContextPath() + "/base");
         }

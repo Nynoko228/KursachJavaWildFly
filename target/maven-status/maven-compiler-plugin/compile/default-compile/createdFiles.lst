@@ -1,9 +1,13 @@
 LogoutServlet.class
-ProfileServlet.class
 TestServiceBean.class
 GamesTableServlet.class
 LoginServlet.class
+Purchase.class
+Role.class
+Cart.class
+BaseServlet.class
+CartServlet.class
+ProfileServlet.class
 User.class
 Game.class
-Role.class
-BaseServlet.class
+CartItem.class
