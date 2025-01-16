@@ -9,6 +9,7 @@ Role.class
 Cart.class
 BaseServlet.class
 CartServlet.class
+ProfileOrdersServlet.class
 ProfileServlet.class
 User.class
 Game.class

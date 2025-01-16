@@ -19,17 +19,17 @@ public class Order {
     private Set<OrderItem> orderItems = new HashSet<>();
 
     @Column(nullable = false)
-    private String order_code_hash;
+    private String order_code;
 
     @Column(nullable = false)
     private Date order_date;
 
     public Order() {}
 
-    public Order(User user, Set<OrderItem> orderItems, String orderCodeHash, Date orderDate) {
+    public Order(User user, Set<OrderItem> orderItems, String orderCode, Date orderDate) {
         this.user = user;
         this.orderItems = orderItems;
-        this.order_code_hash = orderCodeHash;
+        this.order_code = orderCode;
         this.order_date = orderDate;
     }
 
@@ -58,12 +58,12 @@ public class Order {
         this.orderItems = orderItems;
     }
 
-    public String getOrder_code_hash() {
-        return order_code_hash;
+    public String getOrder_code() {
+        return order_code;
     }
 
-    public void setOrder_code_hash(String order_code_hash) {
-        this.order_code_hash = order_code_hash;
+    public void setOrder_code(String order_code) {
+        this.order_code = order_code;
     }
 
     public Date getOrder_date() {

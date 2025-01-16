@@ -1,3 +1,5 @@
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
@@ -9,6 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 
 @Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)
@@ -16,6 +20,8 @@ public class TestServiceBean {
 
     @PersistenceContext(name = "Kursach") // Подключаемся к DB
     private EntityManager entityManager;
+
+    private static final String AES_KEY = "ThisIsAVerySecretKey1234567890ab"; // Ключ для AES (должен быть 16, 24 или 32 байта)
 
     public String addUserWithRole(String username, String password, String roleName) {
         try {
@@ -251,13 +257,13 @@ public class TestServiceBean {
             // Генерируем четырёхзначный код
             String orderCode = generateRandomOrderCode();
 
-            // Хешируем четырёхзначный код
-            String orderCodeHash = hashPassword(orderCode);
+            // Шифруем четырёхзначный код
+            String encryptedOrderCode = encrypt(orderCode, AES_KEY);
 
             // Создаем новый заказ
             Order order = new Order();
             order.setUser(user);
-            order.setOrder_code_hash(orderCodeHash);
+            order.setOrder_code(encryptedOrderCode);
             order.setOrder_date(new java.sql.Date(System.currentTimeMillis()));
 
             // Сохраняем заказ в базе данных
@@ -285,6 +291,68 @@ public class TestServiceBean {
         Random random = new Random();
         int code = 1000 + random.nextInt(9000); // Генерируем число от 1000 до 9999
         return String.valueOf(code);
+    }
+
+    public List<Order> getOrdersByUserId(Long userId) {
+        try {
+            // Получаем пользователя по ID
+            User user = entityManager.find(User.class, userId);
+            if (user == null) {
+                throw new IllegalArgumentException("Пользователь не найден");
+            }
+
+            // Получаем все заказы пользователя
+            TypedQuery<Order> query = entityManager.createQuery(
+                    "SELECT o FROM Order o JOIN FETCH o.orderItems oi JOIN FETCH oi.game WHERE o.user.user_id = :userId", Order.class);
+            query.setParameter("userId", userId);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    private SecretKeySpec getSecretKey(String key) throws NoSuchAlgorithmException {
+        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+        keyGen.init(256); // Используем ключ длиной 128 бит
+        SecretKey secretKey = keyGen.generateKey();
+        byte[] encoded = secretKey.getEncoded();
+        return new SecretKeySpec(encoded, "AES");
+    }
+
+    public String encrypt(String strToEncrypt, String secret) {
+        try {
+            SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "AES");
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes(StandardCharsets.UTF_8)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка при шифровании", e);
+        }
+    }
+
+    public String decrypt(String strToDecrypt, String secret) {
+        try {
+            SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "AES");
+            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+            return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка при расшифровке", e);
+        }
+    }
+
+    // Метод для преобразования Hex-строки в массив байтов
+    private static byte[] hexToBytes(String hex) {
+        int len = hex.length();
+        byte[] bytes = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            bytes[i / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4)
+                    + Character.digit(hex.charAt(i + 1), 16));
+        }
+        return bytes;
     }
 
 }
