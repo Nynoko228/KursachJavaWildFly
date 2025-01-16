@@ -239,7 +239,7 @@ public class TestServiceBean {
             // Получаем пользователя по ID
             User user = entityManager.find(User.class, userId);
             if (user == null) {
-                throw new IllegalArgumentException("Пользователь не найден");
+                return "Пользователь не найден.";
             }
 
             // Получаем корзину пользователя
@@ -258,7 +258,10 @@ public class TestServiceBean {
             Order order = new Order();
             order.setUser(user);
             order.setOrder_code_hash(orderCodeHash);
-            order.setOrder_date((java.sql.Date) new Date(System.currentTimeMillis()));
+            order.setOrder_date(new java.sql.Date(System.currentTimeMillis()));
+
+            // Сохраняем заказ в базе данных
+            entityManager.persist(order);
 
             // Создаем элементы заказа
             for (CartItem cartItem : cart.getCartItems()) {
@@ -266,9 +269,6 @@ public class TestServiceBean {
                 order.getOrderItems().add(orderItem);
                 entityManager.persist(orderItem);
             }
-
-            // Сохраняем заказ в базе данных
-            entityManager.persist(order);
 
             // Очищаем корзину пользователя
             clearCart(userId);

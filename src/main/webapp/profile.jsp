@@ -83,7 +83,7 @@
             <!-- Кнопки для перехода на другие страницы -->
             <a href="${pageContext.request.contextPath}/games" class="button">Каталог игр</a>
             <a href="${pageContext.request.contextPath}/cart" class="button">Корзина</a>
-
+            <a href="${pageContext.request.contextPath}/cart" class="button">Заказы</a>
             <!-- Форма для выхода из системы -->
             <form action="${pageContext.request.contextPath}/logout" method="POST">
                 <button type="submit" class="button">Выйти</button>
