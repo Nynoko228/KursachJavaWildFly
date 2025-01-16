@@ -20,3 +20,21 @@ TRUNCATE TABLE security_user_role RESTART IDENTITY CASCADE;
 TRUNCATE TABLE roles RESTART IDENTITY CASCADE;
 TRUNCATE TABLE users RESTART IDENTITY CASCADE;
 
+
+SELECT
+    o.order_id,
+    o.order_code,
+    o.order_date,
+    o.status,
+    u.user_name,
+    oi.game_id,
+    oi.quantity,
+    oi.price
+FROM
+    orders o
+JOIN
+    users u ON o.user_id = u.user_id
+JOIN
+    order_items oi ON o.order_id = oi.order_id;
+
+

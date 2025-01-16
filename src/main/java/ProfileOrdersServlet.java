@@ -6,10 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @WebServlet("/profile/orders")
 public class ProfileOrdersServlet extends HttpServlet {
@@ -33,19 +31,29 @@ public class ProfileOrdersServlet extends HttpServlet {
                 Role role = testServiceBean.getUserRole(user.getUser_id());
                 request.setAttribute("userRole", role.getRole_name());
 
-                // Получаем заказы в зависимости от роли
-                List<Order> orders;
-                if ("employee".equals(role.getRole_name()) || "director".equals(role.getRole_name())) {
-                    orders = testServiceBean.getAllOrders(); // Получаем все заказы
-                } else {
-                    orders = testServiceBean.getOrdersByUserId(user.getUser_id()); // Получаем заказы пользователя
-                }
-                System.out.println("All Orders: " + orders);
-                request.setAttribute("orders", orders);
+                // Получаем заказы текущего пользователя
+                List<Order> userOrders = testServiceBean.getOrdersByUserId(user.getUser_id());
+                System.out.println("User Orders: " + userOrders);
+                request.setAttribute("userOrders", userOrders);
 
-                // Получаем расшифрованные коды подтверждения для заказов
-                Map<Long, String> decryptedOrderCodes = testServiceBean.getDecryptedOrderCodes(orders);
+                // Получаем расшифрованные коды подтверждения для заказов текущего пользователя
+                Map<Long, String> decryptedOrderCodes = testServiceBean.getDecryptedOrderCodes(userOrders);
                 request.setAttribute("decryptedOrderCodes", decryptedOrderCodes);
+
+                // Получаем все заказы, если пользователь - Работник или Директор
+                List<Order> allOrders = new ArrayList<>();
+                if ("employee".equals(role.getRole_name()) || "director".equals(role.getRole_name())) {
+                    allOrders = testServiceBean.getAllOrders();
+                    // Фильтрация заказов для получения только тех, которые не принадлежат текущему пользователю
+                    List<Order> filteredAllOrders = allOrders.stream()
+                            .filter(order -> userOrders.stream()
+                                    .noneMatch(userOrder -> userOrder.getOrder_id().equals(order.getOrder_id())))
+                            .collect(Collectors.toList());
+
+                    System.out.println("Filtered All Orders: " + filteredAllOrders);
+
+                    request.setAttribute("otherOrders", filteredAllOrders);
+                }
 
                 // Получаем доступные статусы для изменения
                 List<OrderStatus> availableStatuses = getAvailableStatusesForRole(role.getRole_name());
