@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -385,4 +386,21 @@ public class TestServiceBean {
         Optional<Order> orderOptional = findOrderById(orderId);
         return orderOptional.map(Order::getStatus);
     }
+
+    // Метод для расчета и сохранения премии
+    public void saveBonus(User employee, Order order) {
+        // Рассчитываем общую стоимость заказа
+        BigDecimal totalCost = order.getOrderItems().stream()
+                .map(orderItem -> BigDecimal.valueOf(orderItem.getPrice())  // Преобразуем цену в BigDecimal
+                        .multiply(BigDecimal.valueOf(orderItem.getQuantity()))) // Умножаем на количество
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Рассчитываем премию (5% от стоимости заказа)
+        BigDecimal bonusAmount = totalCost.multiply(new BigDecimal("0.05"));
+
+        // Создаем новую премию
+        Bonus bonus = new Bonus(employee, order, bonusAmount, new Date());
+        entityManager.persist(bonus);
+    }
+
 }

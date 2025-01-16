@@ -5,8 +5,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.Optional;
-
 
 @WebServlet("/deliverOrder")
 public class DeliverOrderServlet extends HttpServlet {
@@ -17,6 +17,25 @@ public class DeliverOrderServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Long orderId = Long.parseLong(request.getParameter("orderId"));
         String providedCode = request.getParameter("code");
+
+        // Получаем текущего пользователя (сотрудника или директора)
+        Principal principal = request.getUserPrincipal();
+        if (principal == null) {
+            request.setAttribute("errorMessage", "Для выполнения этой операции необходимо авторизоваться.");
+            request.getRequestDispatcher("/profile/orders").forward(request, response);
+            return;
+        }
+
+        User employee = testServiceBean.getAllUsers().stream()
+                .filter(u -> u.getUser_name().equals(principal.getName()))
+                .findFirst()
+                .orElse(null);
+
+        if (employee == null) {
+            request.setAttribute("errorMessage", "Пользователь не найден.");
+            request.getRequestDispatcher("/profile/orders").forward(request, response);
+            return;
+        }
 
         // Получаем заказ по ID
         Optional<Order> orderOptional = testServiceBean.findOrderById(orderId);
@@ -40,7 +59,11 @@ public class DeliverOrderServlet extends HttpServlet {
             if (decryptedOrderCode.equals(providedCode)) {
                 // Обновляем статус заказа на "Выдан"
                 testServiceBean.updateOrderStatus(orderId, OrderStatus.DELIVERED);
-                request.setAttribute("successMessage", "Заказ успешно выдан.");
+
+                // Сохраняем премию для сотрудника
+                testServiceBean.saveBonus(employee, order);
+
+                request.setAttribute("successMessage", "Заказ успешно выдан. Премия за заказ сохранена.");
             } else {
                 request.setAttribute("errorMessage", "Неверный код подтверждения.");
             }
