@@ -1,4 +1,5 @@
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -14,7 +15,7 @@ public class Cart {
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<CartItem> cartItems;
+    private Set<CartItem> cartItems = new HashSet<>(); // Инициализируем поле
 
     public Cart() {}
 

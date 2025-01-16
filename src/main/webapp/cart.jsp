@@ -68,6 +68,11 @@
         .button:hover {
             background-color: #0056b3;
         }
+        .continue-shopping {
+                display: flex;
+                justify-content: center;
+                margin-top: 1%;
+            }
     </style>
 </head>
 <body>
@@ -114,7 +119,9 @@
         <c:if test="${empty cartItems}">
             <p>Корзина пуста.</p>
         </c:if>
-        <a href="${pageContext.request.contextPath}/games" class="button">Продолжить покупки</a>
+            <div class="continue-shopping">
+                <a href="${pageContext.request.contextPath}/games" class="button">Продолжить покупки</a>
+            </div>
     </div>
 </body>
 </html>

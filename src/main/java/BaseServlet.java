@@ -13,7 +13,7 @@ import java.util.List;
 @WebServlet("/base")
 public class BaseServlet extends HttpServlet {
     @Inject
-    TestServiceBean bean;
+    TestServiceBean testServiceBean;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -34,7 +34,7 @@ public class BaseServlet extends HttpServlet {
 
         if ("reg".equals(action)) {
             String role = req.getParameter("role");
-            message = bean.addUserWithRole(name, password, role);
+            message = testServiceBean.addUserWithRole(name, password, role);
 
             if (message != null && !message.isEmpty()) {
                 // Сохраняем сообщение в сессии перед редиректом

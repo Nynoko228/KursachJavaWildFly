@@ -9,7 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)
@@ -78,6 +80,12 @@ public class TestServiceBean {
 //        nativeQuery.setParameter("id", id);
         return nativeQuery.getResultList();
     }
+    public List<Game> getAllGames() {
+        Query nativeQuery = entityManager.createNativeQuery(
+                "SELECT * FROM games", Game.class);
+//        nativeQuery.setParameter("id", id);
+        return nativeQuery.getResultList();
+    }
 
     public String hashPassword(String password) {
         try {
@@ -95,6 +103,75 @@ public class TestServiceBean {
             hexString.append(String.format("%02x", b));
         }
         return hexString.toString();
+    }
+
+    // Метод для добавления игры в корзину пользователя
+    public void addToCart(Long gameId, Long userId) {
+        try {
+            // Получаем пользователя по ID
+            User user = entityManager.find(User.class, userId);
+            if (user == null) {
+                throw new IllegalArgumentException("Пользователь не найден");
+            }
+
+            // Получаем корзину пользователя
+            Cart cart = user.getCart();
+            if (cart == null) {
+                cart = new Cart(user);
+                user.setCart(cart);
+                entityManager.persist(cart);
+            }
+
+            // Получаем игру по ID
+            Game game = entityManager.find(Game.class, gameId);
+            if (game == null) {
+                throw new IllegalArgumentException("Игра не найдена");
+            }
+
+            // Проверяем, существует ли уже такой товар в корзине
+            TypedQuery<CartItem> cartItemQuery = entityManager.createQuery(
+                    "SELECT ci FROM CartItem ci WHERE ci.cart = :cart AND ci.game = :game", CartItem.class);
+            cartItemQuery.setParameter("cart", cart);
+            cartItemQuery.setParameter("game", game);
+            CartItem cartItem = cartItemQuery.getResultStream().findFirst().orElse(null);
+
+            if (cartItem != null) {
+                // Если товар уже в корзине, увеличиваем количество
+                cartItem.setQuantity(cartItem.getQuantity() + 1);
+            } else {
+                // Если товара нет в корзине, добавляем новый элемент
+                cartItem = new CartItem(cart, game, 1);
+                cart.getCartItems().add(cartItem);
+                entityManager.persist(cartItem);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка при добавлении игры в корзину", e);
+        }
+    }
+
+    // Метод для получения корзины пользователя с JOIN FETCH
+    public Map<Game, Integer> getCartItems(Long userId) {
+        try {
+            // Получаем пользователя с корзиной и элементами корзины
+            TypedQuery<Cart> cartQuery = entityManager.createQuery(
+                    "SELECT c FROM Cart c JOIN FETCH c.cartItems ci JOIN FETCH ci.game g WHERE c.user.user_id = :userId", Cart.class);
+            cartQuery.setParameter("userId", userId);
+            Cart cart = cartQuery.getSingleResult();
+
+            // Получаем элементы корзины
+            List<CartItem> cartItems = new ArrayList<>(cart.getCartItems());
+
+            // Преобразуем элементы корзины в карту
+            Map<Game, Integer> cartMap = new HashMap<>();
+            for (CartItem item : cartItems) {
+                cartMap.put(item.getGame(), item.getQuantity());
+            }
+            return cartMap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new HashMap<>();
+        }
     }
 
 }
