@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet("/profile/orders")
 public class ProfileOrdersServlet extends HttpServlet {
@@ -28,7 +29,12 @@ public class ProfileOrdersServlet extends HttpServlet {
             if (user != null) {
                 // Получаем все заказы пользователя
                 List<Order> orders = testServiceBean.getOrdersByUserId(user.getUser_id());
+                System.out.println("All ORders: " + orders);
                 request.setAttribute("orders", orders);
+
+                // Получаем расшифрованные коды подтверждения для заказов
+                Map<Long, String> decryptedOrderCodes = testServiceBean.getDecryptedOrderCodes(orders);
+                request.setAttribute("decryptedOrderCodes", decryptedOrderCodes);
             } else {
                 request.setAttribute("errorMessage", "Пользователь не найден.");
             }

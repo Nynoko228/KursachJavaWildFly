@@ -303,8 +303,9 @@ public class TestServiceBean {
 
             // Получаем все заказы пользователя
             TypedQuery<Order> query = entityManager.createQuery(
-                    "SELECT o FROM Order o JOIN FETCH o.orderItems oi JOIN FETCH oi.game WHERE o.user.user_id = :userId", Order.class);
+                    "SELECT DISTINCT o FROM Order o JOIN FETCH o.orderItems oi JOIN FETCH oi.game WHERE o.user.user_id = :userId", Order.class);
             query.setParameter("userId", userId);
+
             return query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -344,15 +345,13 @@ public class TestServiceBean {
         }
     }
 
-    // Метод для преобразования Hex-строки в массив байтов
-    private static byte[] hexToBytes(String hex) {
-        int len = hex.length();
-        byte[] bytes = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            bytes[i / 2] = (byte) ((Character.digit(hex.charAt(i), 16) << 4)
-                    + Character.digit(hex.charAt(i + 1), 16));
+    public Map<Long, String> getDecryptedOrderCodes(List<Order> orders) {
+        Map<Long, String> decryptedCodes = new HashMap<>();
+        for (Order order : orders) {
+            String decryptedCode = decrypt(order.getOrder_code(), AES_KEY);
+            decryptedCodes.put(order.getOrder_id(), decryptedCode);
         }
-        return bytes;
+        return decryptedCodes;
     }
 
 }

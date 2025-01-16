@@ -87,10 +87,11 @@
         <h1 class="order-header">Ваши заказы</h1>
         <c:if test="${not empty orders}">
             <c:forEach var="order" items="${orders}">
+                <!-- Выводим информацию о заказе (номер, дата, код получения) один раз для каждого заказа -->
                 <table class="order-table">
                     <thead>
                         <tr>
-                            <th colspan="7">Заказ от <c:out value="${order.order_date}" /></th>
+                            <th colspan="7">Заказ с номером <c:out value="${order.order_id}" /> от <c:out value="${order.order_date}" /></th>
                         </tr>
                         <tr>
                             <th>Название</th>
@@ -103,6 +104,7 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <!-- Переменная для общей стоимости заказа -->
                         <c:set var="totalCost" value="0" />
                         <c:forEach var="orderItem" items="${order.orderItems}">
                             <c:set var="game" value="${orderItem.game}" />
@@ -119,9 +121,14 @@
                                 <td><c:out value="${itemCost}" /></td>
                             </tr>
                         </c:forEach>
+                        <!-- Отображение общей стоимости заказа после всех товаров -->
                         <tr>
                             <td colspan="6" align="right"><strong>Общая стоимость:</strong></td>
                             <td><strong><c:out value="${totalCost}" /></strong></td>
+                        </tr>
+                        <!-- Код для получения заказа -->
+                        <tr>
+                            <td colspan="7" align="right"><strong>Код для получения заказа:</strong> <c:out value="${decryptedOrderCodes[order.order_id]}" /></td>
                         </tr>
                     </tbody>
                 </table>
