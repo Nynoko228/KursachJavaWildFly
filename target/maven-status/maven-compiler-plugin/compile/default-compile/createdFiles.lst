@@ -2,6 +2,8 @@ LogoutServlet.class
 TestServiceBean.class
 GamesTableServlet.class
 LoginServlet.class
+OrderItem.class
+OrderServlet.class
 Purchase.class
 Role.class
 Cart.class
@@ -10,4 +12,5 @@ CartServlet.class
 ProfileServlet.class
 User.class
 Game.class
+Order.class
 CartItem.class

@@ -71,4 +71,61 @@ public class CartServlet extends HttpServlet {
             request.getRequestDispatcher("/cart.jsp").forward(request, response);
         }
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        Principal principal = request.getUserPrincipal();
+
+        if ("clear".equals(request.getParameter("action"))) {
+            if (principal != null) {
+                // Очистка корзины пользователя из базы данных
+                User user = testServiceBean.getAllUsers().stream()
+                        .filter(u -> u.getUser_name().equals(principal.getName()))
+                        .findFirst()
+                        .orElse(null);
+
+                if (user != null) {
+                    testServiceBean.clearCart(user.getUser_id());
+                }
+            } else {
+                // Очистка корзины из сессии
+                if (session != null) {
+                    session.removeAttribute("cart");
+                }
+            }
+
+            // Перезагружаем страницу корзины
+            doGet(request, response);
+        } else if ("remove".equals(request.getParameter("action"))) {
+            Long gameId = Long.parseLong(request.getParameter("gameId"));
+
+            if (principal != null) {
+                // Удаление игры из корзины пользователя из базы данных
+                User user = testServiceBean.getAllUsers().stream()
+                        .filter(u -> u.getUser_name().equals(principal.getName()))
+                        .findFirst()
+                        .orElse(null);
+
+                if (user != null) {
+                    testServiceBean.removeFromCart(gameId, user.getUser_id());
+                }
+            } else {
+                // Удаление игры из корзины в сессии
+                if (session != null) {
+                    Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
+                    if (cart != null) {
+                        cart.remove(gameId);
+                        session.setAttribute("cart", cart);
+                    }
+                }
+            }
+
+            // Перезагружаем страницу корзины
+            doGet(request, response);
+        } else {
+            // Обработка других действий, если необходимо
+            doGet(request, response);
+        }
+    }
 }

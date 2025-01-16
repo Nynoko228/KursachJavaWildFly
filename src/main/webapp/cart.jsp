@@ -68,11 +68,21 @@
         .button:hover {
             background-color: #0056b3;
         }
-        .continue-shopping {
+        .cart-actions {
                 display: flex;
                 justify-content: center;
                 margin-top: 1%;
-            }
+        }
+        .order-message {
+            color: green;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .error-message {
+            color: red;
+            margin-top: 20px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -90,6 +100,7 @@
                         <th>Цена</th>
                         <th>Количество</th>
                         <th>Стоимость</th>
+                        <th>Действия</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -107,21 +118,50 @@
                             <td><c:out value="${game.cost}" /></td>
                             <td><c:out value="${quantity}" /></td>
                             <td><c:out value="${itemCost}" /></td>
+                            <td class="cart-item-actions">
+                                <form action="${pageContext.request.contextPath}/cart" method="post" style="display:inline;">
+                                    <input type="hidden" name="action" value="remove">
+                                    <input type="hidden" name="gameId" value="${game.id}">
+                                    <button type="submit" class="button">Удалить</button>
+                                </form>
+                            </td>
                         </tr>
                     </c:forEach>
                     <tr>
                         <td colspan="6" align="right"><strong>Общая стоимость:</strong></td>
                         <td><strong><c:out value="${totalCost}" /></strong></td>
+                        <td class="cart-item-actions">
+                            <form action="${pageContext.request.contextPath}/cart" method="post" style="display:inline;">
+                                <input type="hidden" name="action" value="clear">
+                                <button type="submit" class="button">Очистить корзину</button>
+                            </form>
+                        </td>
                     </tr>
                 </tbody>
             </table>
+            <div class="cart-actions">
+                <a href="${pageContext.request.contextPath}/games" class="button">Продолжить покупки</a>
+                <form action="${pageContext.request.contextPath}/cart/order" method="post" style="display:inline;">
+                    <button type="submit" class="button">Оформить заказ</button>
+                </form>
+            </div>
+            <c:if test="${not empty orderMessage}">
+                <div class="order-message">
+                    <p>${orderMessage}</p>
+                </div>
+            </c:if>
+            <c:if test="${not empty errorMessage}">
+                <div class="error-message">
+                    <p>${errorMessage}</p>
+                </div>
+            </c:if>
         </c:if>
         <c:if test="${empty cartItems}">
             <p>Корзина пуста.</p>
-        </c:if>
-            <div class="continue-shopping">
+            <div class="cart-actions">
                 <a href="${pageContext.request.contextPath}/games" class="button">Продолжить покупки</a>
             </div>
+        </c:if>
     </div>
 </body>
 </html>

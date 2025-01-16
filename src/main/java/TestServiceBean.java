@@ -8,10 +8,7 @@ import javax.persistence.TypedQuery;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)
@@ -172,6 +169,122 @@ public class TestServiceBean {
             e.printStackTrace();
             return new HashMap<>();
         }
+    }
+
+    public void clearCart(Long userId) {
+        try {
+            // Получаем пользователя по ID
+            User user = entityManager.find(User.class, userId);
+            if (user == null) {
+                throw new IllegalArgumentException("Пользователь не найден");
+            }
+
+            // Получаем корзину пользователя
+            Cart cart = user.getCart();
+            if (cart == null || cart.getCartItems().isEmpty()) {
+                return;
+            }
+
+            // Удаляем все элементы корзины
+            for (CartItem item : new ArrayList<>(cart.getCartItems())) {
+                cart.getCartItems().remove(item);
+                entityManager.remove(item);
+            }
+
+            // Обновляем корзину
+            entityManager.merge(cart);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка при очистке корзины", e);
+        }
+    }
+
+    public void removeFromCart(Long gameId, Long userId) {
+        try {
+            // Получаем пользователя по ID
+            User user = entityManager.find(User.class, userId);
+            if (user == null) {
+                throw new IllegalArgumentException("Пользователь не найден");
+            }
+
+            // Получаем корзину пользователя
+            Cart cart = user.getCart();
+            if (cart == null || cart.getCartItems().isEmpty()) {
+                return;
+            }
+
+            // Находим элемент корзины по gameId
+            CartItem cartItemToRemove = cart.getCartItems().stream()
+                    .filter(ci -> ci.getGame().getId().equals(gameId))
+                    .findFirst()
+                    .orElse(null);
+
+            if (cartItemToRemove != null) {
+                // Удаляем элемент корзины
+                cart.getCartItems().remove(cartItemToRemove);
+                entityManager.remove(cartItemToRemove);
+            }
+
+            // Обновляем корзину
+            entityManager.merge(cart);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка при удалении игры из корзины", e);
+        }
+    }
+
+    // Метод для создания заказа
+    public String createOrder(Long userId) {
+        try {
+            // Получаем пользователя по ID
+            User user = entityManager.find(User.class, userId);
+            if (user == null) {
+                throw new IllegalArgumentException("Пользователь не найден");
+            }
+
+            // Получаем корзину пользователя
+            Cart cart = user.getCart();
+            if (cart == null || cart.getCartItems().isEmpty()) {
+                return "Корзина пуста. Оформить заказ невозможно.";
+            }
+
+            // Генерируем четырёхзначный код
+            String orderCode = generateRandomOrderCode();
+
+            // Хешируем четырёхзначный код
+            String orderCodeHash = hashPassword(orderCode);
+
+            // Создаем новый заказ
+            Order order = new Order();
+            order.setUser(user);
+            order.setOrder_code_hash(orderCodeHash);
+            order.setOrder_date((java.sql.Date) new Date(System.currentTimeMillis()));
+
+            // Создаем элементы заказа
+            for (CartItem cartItem : cart.getCartItems()) {
+                OrderItem orderItem = new OrderItem(order, cartItem.getGame(), cartItem.getQuantity(), cartItem.getGame().getCost());
+                order.getOrderItems().add(orderItem);
+                entityManager.persist(orderItem);
+            }
+
+            // Сохраняем заказ в базе данных
+            entityManager.persist(order);
+
+            // Очищаем корзину пользователя
+            clearCart(userId);
+
+            return "Заказ успешно оформлен. Ваш код подтверждения: " + orderCode;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Ошибка при оформлении заказа: " + e.getMessage();
+        }
+    }
+
+    // Метод для генерации четырёхзначного кода
+    private String generateRandomOrderCode() {
+        Random random = new Random();
+        int code = 1000 + random.nextInt(9000); // Генерируем число от 1000 до 9999
+        return String.valueOf(code);
     }
 
 }
