@@ -130,6 +130,10 @@
                         <tr>
                             <td colspan="7" align="right"><strong>Код для получения заказа:</strong> <c:out value="${decryptedOrderCodes[order.order_id]}" /></td>
                         </tr>
+                        <!-- Отображение статуса заказа -->
+                        <tr>
+                            <td colspan="7" align="right"><strong>Статус заказа:</strong> <c:out value="${order.status.status}" /></td>
+                        </tr>
                     </tbody>
                 </table>
             </c:forEach>

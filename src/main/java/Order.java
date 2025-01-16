@@ -24,13 +24,28 @@ public class Order {
     @Column(nullable = false)
     private Date order_date;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus status;
+
     public Order() {}
 
-    public Order(User user, Set<OrderItem> orderItems, String orderCode, Date orderDate) {
+
+
+    public Order(User user, Set<OrderItem> orderItems, String orderCode, Date orderDate, OrderStatus status) {
         this.user = user;
         this.orderItems = orderItems;
         this.order_code = orderCode;
         this.order_date = orderDate;
+        this.status = status;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 
     // Геттеры и сеттеры
@@ -74,3 +89,4 @@ public class Order {
         this.order_date = order_date;
     }
 }
+

@@ -8,8 +8,6 @@ INSERT INTO games (developer, genre, name, release_date, cost) VALUES
 ('Atlus', 'JRPG', 'Persona 5', '2016-09-15', 5400),
 ('Blizzard Entertainment', 'First-person shooter', 'Overwatch', '2016-05-24', 3600),
 ('Mojang', 'Sandbox', 'Minecraft', '2011-11-18', 2400),
-('Epic Games', 'Battle Royale', 'Fortnite', '2017-07-25', 0),
-('Respawn Entertainment', 'Battle Royale', 'Apex Legends', '2019-02-04', 0),
 ('Team Cherry', 'Metroidvania', 'Hollow Knight', '2017-02-24', 1400),
 ('Maddy Makes Games', 'Platformer', 'Celeste', '2018-01-25', 1800),
 ('ConcernedApe', 'Simulation', 'Stardew Valley', '2016-02-26', 1400),

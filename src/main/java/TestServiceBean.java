@@ -90,6 +90,11 @@ public class TestServiceBean {
         return nativeQuery.getResultList();
     }
 
+    // Метод для получения заказа по ID
+    public Optional<Order> findOrderById(Long orderId) {
+        return Optional.ofNullable(entityManager.find(Order.class, orderId));
+    }
+
     public String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -265,6 +270,7 @@ public class TestServiceBean {
             order.setUser(user);
             order.setOrder_code(encryptedOrderCode);
             order.setOrder_date(new java.sql.Date(System.currentTimeMillis()));
+            order.setStatus(OrderStatus.IN_PROGRESS);
 
             // Сохраняем заказ в базе данных
             entityManager.persist(order);
@@ -313,14 +319,6 @@ public class TestServiceBean {
         }
     }
 
-    private SecretKeySpec getSecretKey(String key) throws NoSuchAlgorithmException {
-        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
-        keyGen.init(256); // Используем ключ длиной 128 бит
-        SecretKey secretKey = keyGen.generateKey();
-        byte[] encoded = secretKey.getEncoded();
-        return new SecretKeySpec(encoded, "AES");
-    }
-
     public String encrypt(String strToEncrypt, String secret) {
         try {
             SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "AES");
@@ -354,4 +352,21 @@ public class TestServiceBean {
         return decryptedCodes;
     }
 
+    // Метод для обновления статуса заказа
+    public void updateOrderStatus(Long orderId, OrderStatus newStatus) {
+        Optional<Order> orderOptional = findOrderById(orderId);
+        if (orderOptional.isPresent()) {
+            Order order = orderOptional.get();
+            order.setStatus(newStatus);
+            entityManager.merge(order);
+        } else {
+            throw new IllegalArgumentException("Order with ID " + orderId + " not found");
+        }
+    }
+
+    // Метод для получения статуса заказа по ID
+    public Optional<OrderStatus> getOrderStatusById(Long orderId) {
+        Optional<Order> orderOptional = findOrderById(orderId);
+        return orderOptional.map(Order::getStatus);
+    }
 }
