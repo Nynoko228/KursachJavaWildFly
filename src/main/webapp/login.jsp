@@ -57,9 +57,14 @@
         <input type="password" id="password" name="j_password" required>
         <div class="button-container">
             <button type="submit">Войти</button>
-            <a href="/Kursach/base"><button type="button">Назад</button></a>
+            <button type="button" onclick="goBack()">Назад</button>
         </div>
     </form>
 </body>
+<script>
+    function goBack() {
+        window.history.back(); // Возвращает пользователя на предыдущую страницу
+    }
+</script>
 </html>
 

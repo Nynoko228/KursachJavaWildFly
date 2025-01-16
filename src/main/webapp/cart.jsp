@@ -87,6 +87,7 @@
 </head>
 <body>
     <jsp:include page="header.jsp" />
+    <jsp:include page="modal.jsp" />
     <div class="content">
         <h1>Корзина</h1>
         <c:if test="${not empty cartItems}">
@@ -146,14 +147,18 @@
                 </form>
             </div>
             <c:if test="${not empty orderMessage}">
-                <div class="order-message">
-                    <p>${orderMessage}</p>
-                </div>
+                <script>
+                    window.onload = function() {
+                        openModal('${orderMessage}');
+                    };
+                </script>
             </c:if>
             <c:if test="${not empty errorMessage}">
-                <div class="error-message">
-                    <p>${errorMessage}</p>
-                </div>
+                <script>
+                    window.onload = function() {
+                        openModal('${errorMessage}');
+                    };
+                </script>
             </c:if>
         </c:if>
         <c:if test="${empty cartItems}">

@@ -25,6 +25,7 @@
             width: 30%;
             border-radius: 8px; /* Закругленные края */
             position: relative;
+            text-align: center; /* Центрирование текста */
         }
 
         .close {
