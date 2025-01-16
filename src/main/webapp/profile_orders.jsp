@@ -107,6 +107,60 @@
         .tab-content.current {
             display: block;
         }
+
+                .modal {
+                    display: none; /* Скрываем модальное окно по умолчанию */
+                    position: fixed;
+                    z-index: 1000;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    background-color: rgba(0, 0, 0, 0.4);
+                }
+                .modal-content {
+                    background-color: #fefefe;
+                    margin: 15% auto;
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 30%;
+                    border-radius: 8px; /* Закругленные края */
+                    position: relative;
+                    text-align: center; /* Центрирование текста */
+                }
+                .close {
+                    color: #aaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+                .close:hover,
+                .close:focus {
+                    color: black;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
+                .modal-button {
+                    background-color: #007bff;
+                    border: none;
+                    color: white;
+                    padding: 10px 20px;
+                    text-align: center;
+                    text-decoration: none;
+                    display: inline-block;
+                    font-size: 16px;
+                    margin: 4px 2px;
+                    cursor: pointer;
+                    border-radius: 4px;
+                }
+                .modal-button:hover {
+                    background-color: #0056b3;
+                }
+                .modal-message {
+                    margin-bottom: 20px;
+                }
     </style>
 </head>
 <body>
@@ -255,6 +309,14 @@
                                     </td>
                                 </form>
                             </c:if>
+                            <!-- Кнопка "Отдать заказ" -->
+                            <c:if test="${order.status eq 'READY_FOR_PICKUP'}">
+                                <tr>
+                                    <td colspan="7" align="center">
+                                        <button class="deliver-order-button" data-order-id="${order.order_id}" onclick="showModal('${order.order_id}')">Отдать заказ</button>
+                                    </td>
+                                </tr>
+                            </c:if>
                         </tbody>
                     </table>
                 </c:forEach>
@@ -264,6 +326,24 @@
             </c:if>
         </div>
     </c:if>
+
+    <!-- Модальное окно -->
+    <div id="modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Отдать заказ</h3>
+            <!-- Форма для отправки данных на сервер -->
+            <form id="deliveryForm" action="${pageContext.request.contextPath}/deliverOrder" method="get">
+                <label for="orderCode">Введите код заказа:</label><br>
+                <input type="text" id="orderCode" name="code" placeholder="Введите код" required>
+                <!-- Скрытое поле для передачи ID заказа -->
+                <input type="hidden" id="hiddenOrderId" name="orderId">
+                <br><br>
+                <button type="submit">Ввод</button>
+                <button type="button" onclick="closeModal()">Назад</button>
+            </form>
+        </div>
+    </div>
 
     <!-- JavaScript для переключения вкладок -->
     <script>
@@ -290,6 +370,16 @@
                 });
             });
         });
+        // Функция для открытия модального окна
+        function showModal(orderId) {
+            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('hiddenOrderId').value = orderId;
+        }
+
+        // Функция для закрытия модального окна
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
     </script>
 </div>
 </body>

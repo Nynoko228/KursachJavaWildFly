@@ -16,4 +16,5 @@ UpdateOrderStatusServlet.class
 User.class
 Game.class
 Order.class
+DeliverOrderServlet.class
 CartItem.class

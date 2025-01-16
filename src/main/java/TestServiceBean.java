@@ -279,7 +279,7 @@ public class TestServiceBean {
             String orderCode = generateRandomOrderCode();
 
             // Шифруем четырёхзначный код
-            String encryptedOrderCode = encrypt(orderCode, AES_KEY);
+            String encryptedOrderCode = encrypt(orderCode);
 
             // Создаем новый заказ
             Order order = new Order();
@@ -335,9 +335,9 @@ public class TestServiceBean {
         }
     }
 
-    public String encrypt(String strToEncrypt, String secret) {
+    public String encrypt(String strToEncrypt) {
         try {
-            SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "AES");
+            SecretKeySpec secretKey = new SecretKeySpec(AES_KEY.getBytes(StandardCharsets.UTF_8), "AES");
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             return Base64.getEncoder().encodeToString(cipher.doFinal(strToEncrypt.getBytes(StandardCharsets.UTF_8)));
@@ -347,9 +347,9 @@ public class TestServiceBean {
         }
     }
 
-    public String decrypt(String strToDecrypt, String secret) {
+    public String decrypt(String strToDecrypt) {
         try {
-            SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "AES");
+            SecretKeySpec secretKey = new SecretKeySpec(AES_KEY.getBytes(StandardCharsets.UTF_8), "AES");
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, secretKey);
             return new String(cipher.doFinal(Base64.getDecoder().decode(strToDecrypt)));
@@ -362,7 +362,7 @@ public class TestServiceBean {
     public Map<Long, String> getDecryptedOrderCodes(List<Order> orders) {
         Map<Long, String> decryptedCodes = new HashMap<>();
         for (Order order : orders) {
-            String decryptedCode = decrypt(order.getOrder_code(), AES_KEY);
+            String decryptedCode = decrypt(order.getOrder_code());
             decryptedCodes.put(order.getOrder_id(), decryptedCode);
         }
         return decryptedCodes;
