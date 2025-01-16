@@ -12,6 +12,7 @@ CartServlet.class
 ProfileOrdersServlet.class
 ProfileServlet.class
 OrderStatus.class
+UpdateOrderStatusServlet.class
 User.class
 Game.class
 Order.class

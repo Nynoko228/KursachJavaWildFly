@@ -95,6 +95,22 @@ public class TestServiceBean {
         return Optional.ofNullable(entityManager.find(Order.class, orderId));
     }
 
+    // Метод для получения роли пользователя по ID
+    public Role getUserRole(Long userId) {
+        User user = entityManager.find(User.class, userId);
+        if (user != null) {
+            return user.getRole();
+        }
+        return null;
+    }
+
+    // Метод для получения всех заказов
+    public List<Order> getAllOrders() {
+        TypedQuery<Order> query = entityManager.createQuery(
+                "SELECT DISTINCT o FROM Order o JOIN FETCH o.orderItems oi JOIN FETCH oi.game", Order.class);
+        return query.getResultList();
+    }
+
     public String hashPassword(String password) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");

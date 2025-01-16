@@ -134,6 +134,20 @@
                         <tr>
                             <td colspan="7" align="right"><strong>Статус заказа:</strong> <c:out value="${order.status.status}" /></td>
                         </tr>
+                        <!-- Форма для изменения статуса заказа -->
+                        <c:if test="${not empty availableStatuses}">
+                            <form action="${pageContext.request.contextPath}/updateOrderStatus" method="GET">
+                                <input type="hidden" name="orderId" value="${order.order_id}" />
+                                <td colspan="7" align="right">
+                                    <select name="newStatus">
+                                        <c:forEach var="status" items="${availableStatuses}">
+                                            <option value="${status}">${status.status}</option>
+                                        </c:forEach>
+                                    </select>
+                                    <button type="submit">Обновить статус</button>
+                                </td>
+                            </form>
+                        </c:if>
                     </tbody>
                 </table>
             </c:forEach>
