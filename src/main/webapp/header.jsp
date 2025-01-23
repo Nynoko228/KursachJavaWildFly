@@ -1,25 +1,43 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<style>
-    /* Заголовок */
-    .header {
-        position: fixed; /* Фиксация заголовка сверху */
-        top: 0;
-        left: 0;
-        width: 100%; /* Заголовок занимает всю ширину экрана */
-        height: 5%; /* Высота заголовка: 10% от высоты окна */
-        z-index: 1000; /* Отображается поверх остального содержимого */
-        display: flex; /* Для выравнивания содержимого */
-        align-items: center; /* Центрируем элементы по вертикали */
-    }
-
-    /* Основное содержимое */
-    .main-content {
-        margin-top: 5%; /* Отступ сверху равен высоте заголовка */
-        padding: 20px; /* Внутренние отступы для контента */
-    }
-</style>
-<div class="header">
-    <a href="${pageContext.request.contextPath}/profile" class="header-link">Профиль</a>
-    <a href="${pageContext.request.contextPath}/cart" class="header-link">Корзина</a>
-    <a href="${pageContext.request.contextPath}/games" class="header-link">Каталог</a>
-</div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Header</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/styles.css">
+    <style>
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: fixed;  /* Фиксируем хедер */
+            top: 0;           /* Прижимаем к верхнему краю */
+            left: 0;
+            right: 0;
+            z-index: 1000;    /* Убедимся, что хедер поверх других элементов */
+            height: 100px;
+        }
+        .main-content {
+            padding-top: 110px;  /* Отступ = высота хедера + дополнительные пиксели */
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        .header a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        .header a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Магазин игр</h1>
+        <a href="${pageContext.request.contextPath}/home">Главная</a>
+        <a href="${pageContext.request.contextPath}/profile/orders">Мои заказы</a>
+    </div>
+</body>
+</html>

@@ -41,7 +41,7 @@ public class LogoutServlet extends HttpServlet {
 //        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         // Прерываем процесс перенаправления, если уже произошел редирект
         // Перенаправление на страницу авторизации
-        response.sendRedirect(request.getContextPath() + "/base");
+        response.sendRedirect(request.getContextPath() + "/home");
 
     }
 }

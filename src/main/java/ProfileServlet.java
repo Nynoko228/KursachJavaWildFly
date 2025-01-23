@@ -25,7 +25,7 @@ public class ProfileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Principal principal = request.getUserPrincipal();
         if (principal == null) {
-            response.sendRedirect("/base");  // Перенаправление на страницу авторизации
+            response.sendRedirect("/home");  // Перенаправление на страницу авторизации
         } else {
             try {
                 // Получаем пользователя из базы данных
@@ -75,7 +75,7 @@ public class ProfileServlet extends HttpServlet {
                 request.getRequestDispatcher("profile.jsp").forward(request, response);
             } catch (Exception e) {
                 e.printStackTrace();
-                response.sendRedirect("/base");  // Перенаправление на страницу авторизации в случае ошибки
+                response.sendRedirect("/home");  // Перенаправление на страницу авторизации в случае ошибки
             }
         }
     }

@@ -84,6 +84,11 @@
             <a href="${pageContext.request.contextPath}/games" class="button">Каталог игр</a>
             <a href="${pageContext.request.contextPath}/cart" class="button">Корзина</a>
             <a href="${pageContext.request.contextPath}/profile/orders" class="button">Заказы</a>
+            <c:if test="${userRole eq 'director'}">
+                <div class="bonuses-button">
+                    <a href="${pageContext.request.contextPath}/profile/bonuses" class="button">Премии сотрудников</a>
+                </div>
+            </c:if>
             <!-- Форма для выхода из системы -->
             <form action="${pageContext.request.contextPath}/logout" method="POST">
                 <button type="submit" class="button">Выйти</button>

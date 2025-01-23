@@ -18,7 +18,7 @@
     <h3>Actions:</h3>
     <ul>
         <li><a href="<c:url value='/logout' />">Logout</a></li>
-        <li><a href="<c:url value='/base' />">Go to Main Page</a></li>
+        <li><a href="<c:url value='/home' />">Go to Main Page</a></li>
     </ul>
 </body>
 </html>

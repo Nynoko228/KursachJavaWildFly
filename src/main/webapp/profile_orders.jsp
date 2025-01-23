@@ -13,35 +13,11 @@
             padding: 0;
             background-color: #f4f4f9;
         }
-        .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-        .header a {
-            color: white;
-            text-decoration: none;
-            margin-right: 20px;
-            font-size: 16px;
-        }
-        .header a:hover {
-            color: #0056b3; /* Цвет при наведении */
-        }
-        .content {
-            padding-top: 60px; /* Высота шапки */
-            padding-left: 20px;
-            padding-right: 20px;
-        }
         table {
             border-collapse: collapse;
             width: 100%;
             font-family: Arial, sans-serif;
-            margin-top: 20px;
+
         }
         th, td {
             border: 1px solid black;
@@ -73,13 +49,6 @@
             margin-top: 20px;
             text-align: center;
         }
-        .order-table {
-            margin-top: 20px;
-        }
-        .order-header {
-            margin-bottom: 20px;
-        }
-
         .tabs {
             list-style: none;
             padding: 0;
@@ -102,12 +71,16 @@
             display: none;
             padding: 20px;
             border: 1px solid #ccc;
-            border-top: none;
+
         }
         .tab-content.current {
             display: block;
         }
-
+        .main-content {
+            margin-top: 20px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
         .modal {
             display: none; /* Скрываем модальное окно по умолчанию */
             position: fixed;

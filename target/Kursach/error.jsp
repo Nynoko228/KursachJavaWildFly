@@ -56,7 +56,7 @@
 </body>
 <script>
     function goBack() {
-        window.location.href = '${pageContext.request.contextPath}/base';
+        window.location.href = '${pageContext.request.contextPath}/home';
     }
 </script>
 </html>

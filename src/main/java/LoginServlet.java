@@ -26,7 +26,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("username", username);
             response.sendRedirect("profile.jsp");
         } else {
-            response.sendRedirect("base?error=invalid_credentials");
+            response.sendRedirect("home?error=invalid_credentials");
         }
     }
 

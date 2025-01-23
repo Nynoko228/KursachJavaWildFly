@@ -111,7 +111,7 @@
 </head>
 <body>
 <h1>Добро пожаловать</h1>
-<form action="base" method="post">
+<form action="home" method="post">
     <div class="button-container">
         <button type="button" onclick="openModal('registration')">Зарегистрироваться</button>
         <!--<button type="button" onclick="document.getElementById('authorization').style.display='block'">Авторизоваться</button>-->
@@ -134,7 +134,7 @@
         <span class="close" onclick="closeModal('registration')">&times;</span>
         <h2 style="text-align: center;">Зарегистрироваться</h2>
           <div class="container">
-            <form action="base" method="post">
+            <form action="home" method="post">
               <label for="modalName">Имя:</label>
               <input type="text" id="modalName" name="name" required>
               <label for="modaPswd">Пароль:</label>

@@ -10,7 +10,7 @@ import java.util.List;
 
 // Для запуска PostgreSQL ищием pgAdmin4
 
-@WebServlet("/base")
+@WebServlet("/home")
 public class BaseServlet extends HttpServlet {
     @Inject
     TestServiceBean testServiceBean;
@@ -39,7 +39,7 @@ public class BaseServlet extends HttpServlet {
             if (message != null && !message.isEmpty()) {
                 // Сохраняем сообщение в сессии перед редиректом
                 req.getSession().setAttribute("resultMessage", message);
-                resp.sendRedirect(req.getContextPath() + "/base");
+                resp.sendRedirect(req.getContextPath() + "/home");
                 return;
             }
 
@@ -52,7 +52,7 @@ public class BaseServlet extends HttpServlet {
         } else if ("catalog".equals(action)) {
             resp.sendRedirect(req.getContextPath() + "/games");
         } else {
-            resp.sendRedirect(req.getContextPath() + "/base");
+            resp.sendRedirect(req.getContextPath() + "/home");
         }
     }
 

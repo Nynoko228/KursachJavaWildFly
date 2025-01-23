@@ -17,6 +17,15 @@
   </login-config>
   <security-constraint>
     <web-resource-collection>
+      <web-resource-name>Bonuses</web-resource-name>
+      <url-pattern>/profile/bonuses</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>director</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
       <web-resource-name>Secure Pages</web-resource-name>
       <url-pattern>/profile/*</url-pattern>
     </web-resource-collection>

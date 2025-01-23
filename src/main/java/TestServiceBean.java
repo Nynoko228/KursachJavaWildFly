@@ -409,4 +409,11 @@ public class TestServiceBean {
         entityManager.persist(bonus);
     }
 
+    // Метод для получения всех премий
+    public List<Bonus> getAllBonuses() {
+        TypedQuery<Bonus> query = entityManager.createQuery(
+                "SELECT b FROM Bonus b JOIN FETCH b.employee JOIN FETCH b.order", Bonus.class);
+        return query.getResultList();
+    }
+
 }

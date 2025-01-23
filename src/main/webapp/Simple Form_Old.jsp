@@ -109,7 +109,7 @@
     </table>
 </div>
 //-->
-<form action="base" method="post">
+<form action="home" method="post">
     <div class="button-container">
         <button type="button" onclick="document.getElementById('registration').style.display='block'">Зарегистрироваться</button>
         <!--<button type="button" onclick="document.getElementById('authorization').style.display='block'">Авторизоваться</button>-->
@@ -122,7 +122,7 @@
     <div class="modal-content">
         <span class="close" onclick="closeModal('registration')">&times;</span>
         <h2>Добавить студента</h2>
-        <form action="base" method="post">
+        <form action="home" method="post">
             <label for="modalName">Имя:</label>
             <input type="text" id="modalName" name="name" required><br><br>
             <label for="modaPswd">Пароль:</label>
@@ -144,7 +144,7 @@
     <div class="modal-content">
         <span class="close" onclick="closeModal('authorization')">&times;</span>
         <h2>Вход в профиль</h2>
-        <form action="base" method="post">
+        <form action="home" method="post">
             <label for="modalName">Имя:</label>
             <input type="text" id="modalName" name="name" required><br><br>
             <label for="modaPswd">Пароль:</label>
