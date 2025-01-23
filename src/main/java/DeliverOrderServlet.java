@@ -61,7 +61,7 @@ public class DeliverOrderServlet extends HttpServlet {
                 testServiceBean.updateOrderStatus(orderId, OrderStatus.DELIVERED);
 
                 // Сохраняем премию для сотрудника
-                testServiceBean.saveBonus(employee, order);
+                testServiceBean.saveBonus(employee, order.getOrder_id());
 
                 request.setAttribute("successMessage", "Заказ успешно выдан. Премия за заказ сохранена.");
             } else {

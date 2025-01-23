@@ -388,7 +388,13 @@ public class TestServiceBean {
     }
 
     // Метод для расчета и сохранения премии
-    public void saveBonus(User employee, Order order) {
+    public void saveBonus(User employee, Long orderId) {
+        Order order = entityManager.createQuery(
+                        "SELECT o FROM Order o " +
+                                "JOIN FETCH o.orderItems " +
+                                "WHERE o.id = :orderId", Order.class)
+                .setParameter("orderId", orderId)
+                .getSingleResult();
         // Рассчитываем общую стоимость заказа
         BigDecimal totalCost = order.getOrderItems().stream()
                 .map(orderItem -> BigDecimal.valueOf(orderItem.getPrice())  // Преобразуем цену в BigDecimal
