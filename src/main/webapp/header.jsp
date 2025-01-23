@@ -31,12 +31,22 @@
         .header a:hover {
             text-decoration: underline;
         }
+        .header h1 a {
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .header h1 a:hover {
+            text-decoration: none !important;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Магазин игр</h1>
+        <h1>
+            <a href="${pageContext.request.contextPath}/games">Магазин игр</a>
+        </h1>
         <a href="${pageContext.request.contextPath}/home">Главная</a>
+        <a href="${pageContext.request.contextPath}/profile">Мои профиль</a>
         <a href="${pageContext.request.contextPath}/profile/orders">Мои заказы</a>
     </div>
 </body>

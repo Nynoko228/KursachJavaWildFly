@@ -71,6 +71,7 @@ public class ProfileServlet extends HttpServlet {
 
                 // Передаем пользователя в сессию
                 request.getSession().setAttribute("user", user);
+                request.getSession().setAttribute("userRole", user.getRole().getRole_name());
 
                 request.getRequestDispatcher("profile.jsp").forward(request, response);
             } catch (Exception e) {

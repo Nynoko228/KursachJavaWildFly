@@ -13,25 +13,6 @@
             padding: 0;
             background-color: #f4f4f9;
         }
-        .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-        .header a {
-            color: white;
-            text-decoration: none;
-            margin-right: 20px;
-            font-size: 16px;
-        }
-        .header a:hover {
-            color: #0056b3; /* Цвет при наведении */
-        }
         .content {
             padding-top: 60px; /* Высота шапки */
             padding-left: 20px;
