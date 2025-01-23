@@ -120,6 +120,13 @@
             justify-content: center;
             padding: 20px 0; /* Вертикальные отступы */
         }
+        .clickable-row {
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .clickable-row:hover {
+            background-color: #f5f5f5;
+        }
     </style>
 </head>
 <body>
@@ -141,11 +148,12 @@
                             </thead>
                             <tbody>
                                 <c:forEach var="bonus" items="${bonuses}">
-                                    <tr>
-                                        <td><c:out value="${bonus.employee.user_name}" /></td>
-                                        <td><c:out value="${bonus.order.order_id}" /></td>
-                                        <td><c:out value="${bonus.amount}" /></td>
-                                        <td><fmt:formatDate value="${bonus.bonus_date}" pattern="dd.MM.yyyy HH:mm" /></td>
+                                    <tr class="clickable-row"
+                                    data-href="${pageContext.request.contextPath}/profile/orderDetails?orderId=${bonus.order.order_id}">
+                                            <td><c:out value="${bonus.employee.user_name}" /></td>
+                                            <td><c:out value="${bonus.order.order_id}" /></td>
+                                            <td><c:out value="${bonus.amount}" /></td>
+                                            <td><fmt:formatDate value="${bonus.bonus_date}" pattern="dd.MM.yyyy HH:mm" /></td>
                                     </tr>
                                 </c:forEach>
                             </tbody>
@@ -172,4 +180,18 @@
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.clickable-row').forEach(row => {
+            // Обработчик клика
+            row.addEventListener('click', function(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    window.open(this.dataset.href, '_blank');
+                } else {
+                    window.location.href = this.dataset.href;
+                }
+            });
+        });
+    });
+</script>
 </html>

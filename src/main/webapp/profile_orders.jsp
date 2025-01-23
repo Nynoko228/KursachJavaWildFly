@@ -6,18 +6,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Заказы пользователя</title>
+    <jsp:include page="header.jsp" />
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
             background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
         }
         table {
             border-collapse: collapse;
             width: 100%;
             font-family: Arial, sans-serif;
-
         }
         th, td {
             border: 1px solid black;
@@ -137,95 +140,20 @@
     </style>
 </head>
 <body>
-<jsp:include page="header.jsp" />
-<div class="main-content">
-    <ul class="tabs">
-        <li class="tab-link current" data-tab="#tab-1">Мои заказы</li>
-        <c:if test="${userRole eq 'employee' or userRole eq 'director'}">
-            <li class="tab-link" data-tab="#tab-2">Остальные заказы</li>
-        </c:if>
-    </ul>
 
-    <!-- Вкладка "Мои заказы" -->
-    <div id="tab-1" class="tab-content current">
-        <c:if test="${not empty userOrders}">
-            <c:forEach var="order" items="${userOrders}">
-                <!-- Отображение заказов текущего пользователя -->
-                <table class="order-table">
-                    <thead>
-                        <tr>
-                            <th colspan="7">Заказ <c:out value="${order.order_id}" /> от <c:out value="${order.order_date}" /></th>
-                        </tr>
-                        <tr>
-                            <th>Название</th>
-                            <th>Жанр</th>
-                            <th>Разработчик</th>
-                            <th>Дата релиза</th>
-                            <th>Цена</th>
-                            <th>Количество</th>
-                            <th>Стоимость</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Переменная для общей стоимости заказа -->
-                        <c:set var="totalCost" value="0" />
-                        <c:forEach var="orderItem" items="${order.orderItems}">
-                            <c:set var="game" value="${orderItem.game}" />
-                            <c:set var="quantity" value="${orderItem.quantity}" />
-                            <c:set var="itemCost" value="${orderItem.price * quantity}" />
-                            <c:set var="totalCost" value="${totalCost + itemCost}" />
-                            <tr>
-                                <td><c:out value="${game.name}" /></td>
-                                <td><c:out value="${game.genre}" /></td>
-                                <td><c:out value="${game.developer}" /></td>
-                                <td><c:out value="${game.release_date}" /></td>
-                                <td><c:out value="${orderItem.price}" /></td>
-                                <td><c:out value="${quantity}" /></td>
-                                <td><c:out value="${itemCost}" /></td>
-                            </tr>
-                        </c:forEach>
-                        <!-- Отображение общей стоимости заказа после всех товаров -->
-                        <tr>
-                            <td colspan="6" align="right"><strong>Общая стоимость:</strong></td>
-                            <td><strong><c:out value="${totalCost}" /></strong></td>
-                        </tr>
-                        <!-- Код для получения заказа -->
-                        <tr>
-                            <td colspan="7" align="right"><strong>Код для получения заказа:</strong> <c:out value="${decryptedOrderCodes[order.order_id]}" /></td>
-                        </tr>
-                        <!-- Отображение статуса заказа -->
-                        <tr>
-                            <td colspan="7" align="right"><strong>Статус заказа:</strong> <c:out value="${order.status.status}" /></td>
-                        </tr>
-                        <!-- Форма для изменения статуса заказа -->
-                        <c:if test="${not empty availableStatuses}">
-                            <form action="${pageContext.request.contextPath}/updateOrderStatus" method="GET">
-                                <input type="hidden" name="orderId" value="${order.order_id}" />
-                                <td colspan="7" align="right">
-                                    <select name="newStatus">
-                                        <c:forEach var="status" items="${availableStatuses}">
-                                            <option value="${status}">${status.status}</option>
-                                        </c:forEach>
-                                    </select>
-                                    <button type="submit">Обновить статус</button>
-                                </td>
-                            </form>
-                        </c:if>
-                    </tbody>
-                </table>
-            </c:forEach>
-        </c:if>
-        <c:if test="${empty userOrders}">
-            <p>У вас нет заказов.</p>
-        </c:if>
-    </div>
+    <div class="main-content">
+        <ul class="tabs">
+            <li class="tab-link current" data-tab="#tab-1">Мои заказы</li>
+            <c:if test="${userRole eq 'employee' or userRole eq 'director'}">
+                <li class="tab-link" data-tab="#tab-2">Остальные заказы</li>
+            </c:if>
+        </ul>
 
-    <!-- Вкладка "Остальные заказы" -->
-    <c:if test="${userRole eq 'employee' or userRole eq 'director'}">
-        <div id="tab-2" class="tab-content">
-            <c:if test="${not empty otherOrders}">
-                <c:forEach var="order" items="${otherOrders}">
-                    <!-- Отображение заказов других пользователей -->
+        <!-- Вкладка "Мои заказы" -->
+        <div id="tab-1" class="tab-content current">
+            <c:if test="${not empty userOrders}">
+                <c:forEach var="order" items="${userOrders}">
+                    <!-- Отображение заказов текущего пользователя -->
                     <table class="order-table">
                         <thead>
                             <tr>
@@ -264,6 +192,10 @@
                                 <td colspan="6" align="right"><strong>Общая стоимость:</strong></td>
                                 <td><strong><c:out value="${totalCost}" /></strong></td>
                             </tr>
+                            <!-- Код для получения заказа -->
+                            <tr>
+                                <td colspan="7" align="right"><strong>Код для получения заказа:</strong> <c:out value="${decryptedOrderCodes[order.order_id]}" /></td>
+                            </tr>
                             <!-- Отображение статуса заказа -->
                             <tr>
                                 <td colspan="7" align="right"><strong>Статус заказа:</strong> <c:out value="${order.status.status}" /></td>
@@ -282,78 +214,149 @@
                                     </td>
                                 </form>
                             </c:if>
-                            <!-- Кнопка "Отдать заказ" -->
-                            <c:if test="${order.status eq 'READY_FOR_PICKUP'}">
-                                <tr>
-                                    <td colspan="7" align="center">
-                                        <button class="deliver-order-button" data-order-id="${order.order_id}" onclick="showModal('${order.order_id}')">Отдать заказ</button>
-                                    </td>
-                                </tr>
-                            </c:if>
                         </tbody>
                     </table>
                 </c:forEach>
             </c:if>
-            <c:if test="${empty otherOrders}">
-                <p>Нет заказов других пользователей.</p>
+            <c:if test="${empty userOrders}">
+                <p>У вас нет заказов.</p>
             </c:if>
         </div>
-    </c:if>
 
-    <!-- Модальное окно -->
-    <div id="modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h3>Отдать заказ</h3>
-            <!-- Форма для отправки данных на сервер -->
-            <form id="deliveryForm" action="${pageContext.request.contextPath}/deliverOrder" method="get">
-                <label for="orderCode">Введите код заказа:</label><br>
-                <input type="text" id="orderCode" name="code" placeholder="Введите код" required>
-                <!-- Скрытое поле для передачи ID заказа -->
-                <input type="hidden" id="hiddenOrderId" name="orderId">
-                <br><br>
-                <button class="modal-button" type="submit">Ввод</button>
-                <button class="modal-button" type="button" onclick="closeModal()">Назад</button>
-            </form>
+        <!-- Вкладка "Остальные заказы" -->
+        <c:if test="${userRole eq 'employee' or userRole eq 'director'}">
+            <div id="tab-2" class="tab-content">
+                <c:if test="${not empty otherOrders}">
+                    <c:forEach var="order" items="${otherOrders}">
+                        <!-- Отображение заказов других пользователей -->
+                        <table class="order-table">
+                            <thead>
+                                <tr>
+                                    <th colspan="7">Заказ <c:out value="${order.order_id}" /> от <c:out value="${order.order_date}" /></th>
+                                </tr>
+                                <tr>
+                                    <th>Название</th>
+                                    <th>Жанр</th>
+                                    <th>Разработчик</th>
+                                    <th>Дата релиза</th>
+                                    <th>Цена</th>
+                                    <th>Количество</th>
+                                    <th>Стоимость</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Переменная для общей стоимости заказа -->
+                                <c:set var="totalCost" value="0" />
+                                <c:forEach var="orderItem" items="${order.orderItems}">
+                                    <c:set var="game" value="${orderItem.game}" />
+                                    <c:set var="quantity" value="${orderItem.quantity}" />
+                                    <c:set var="itemCost" value="${orderItem.price * quantity}" />
+                                    <c:set var="totalCost" value="${totalCost + itemCost}" />
+                                    <tr>
+                                        <td><c:out value="${game.name}" /></td>
+                                        <td><c:out value="${game.genre}" /></td>
+                                        <td><c:out value="${game.developer}" /></td>
+                                        <td><c:out value="${game.release_date}" /></td>
+                                        <td><c:out value="${orderItem.price}" /></td>
+                                        <td><c:out value="${quantity}" /></td>
+                                        <td><c:out value="${itemCost}" /></td>
+                                    </tr>
+                                </c:forEach>
+                                <!-- Отображение общей стоимости заказа после всех товаров -->
+                                <tr>
+                                    <td colspan="6" align="right"><strong>Общая стоимость:</strong></td>
+                                    <td><strong><c:out value="${totalCost}" /></strong></td>
+                                </tr>
+                                <!-- Отображение статуса заказа -->
+                                <tr>
+                                    <td colspan="7" align="right"><strong>Статус заказа:</strong> <c:out value="${order.status.status}" /></td>
+                                </tr>
+                                <!-- Форма для изменения статуса заказа -->
+                                <c:if test="${not empty availableStatuses}">
+                                    <form action="${pageContext.request.contextPath}/updateOrderStatus" method="GET">
+                                        <input type="hidden" name="orderId" value="${order.order_id}" />
+                                        <td colspan="7" align="right">
+                                            <select name="newStatus">
+                                                <c:forEach var="status" items="${availableStatuses}">
+                                                    <option value="${status}">${status.status}</option>
+                                                </c:forEach>
+                                            </select>
+                                            <button type="submit">Обновить статус</button>
+                                        </td>
+                                    </form>
+                                </c:if>
+                                <!-- Кнопка "Отдать заказ" -->
+                                <c:if test="${order.status eq 'READY_FOR_PICKUP'}">
+                                    <tr>
+                                        <td colspan="7" align="center">
+                                            <button class="deliver-order-button" data-order-id="${order.order_id}" onclick="showModal('${order.order_id}')">Отдать заказ</button>
+                                        </td>
+                                    </tr>
+                                </c:if>
+                            </tbody>
+                        </table>
+                    </c:forEach>
+                </c:if>
+                <c:if test="${empty otherOrders}">
+                    <p>Нет заказов других пользователей.</p>
+                </c:if>
+            </div>
+        </c:if>
+
+        <!-- Модальное окно -->
+        <div id="modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h3>Отдать заказ</h3>
+                <!-- Форма для отправки данных на сервер -->
+                <form id="deliveryForm" action="${pageContext.request.contextPath}/deliverOrder" method="get">
+                    <label for="orderCode">Введите код заказа:</label><br>
+                    <input type="text" id="orderCode" name="code" placeholder="Введите код" required>
+                    <!-- Скрытое поле для передачи ID заказа -->
+                    <input type="hidden" id="hiddenOrderId" name="orderId">
+                    <br><br>
+                    <button class="modal-button" type="submit">Ввод</button>
+                    <button class="modal-button" type="button" onclick="closeModal()">Назад</button>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <!-- JavaScript для переключения вкладок -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            var tabLinks = document.querySelectorAll(".tab-link");
-            var tabContents = document.querySelectorAll(".tab-content");
+        <!-- JavaScript для переключения вкладок -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var tabLinks = document.querySelectorAll(".tab-link");
+                var tabContents = document.querySelectorAll(".tab-content");
 
-            tabLinks.forEach(function (tabLink) {
-                tabLink.addEventListener("click", function (event) {
-                    event.preventDefault();
+                tabLinks.forEach(function (tabLink) {
+                    tabLink.addEventListener("click", function (event) {
+                        event.preventDefault();
 
-                    // Удаляем класс "current" у всех вкладок и содержимого
-                    tabLinks.forEach(function (link) {
-                        link.classList.remove("current");
+                        // Удаляем класс "current" у всех вкладок и содержимого
+                        tabLinks.forEach(function (link) {
+                            link.classList.remove("current");
+                        });
+
+                        tabContents.forEach(function (content) {
+                            content.classList.remove("current");
+                        });
+
+                        // Добавляем класс "current" для активной вкладки и её содержимого
+                        this.classList.add("current");
+                        document.querySelector(this.getAttribute("data-tab")).classList.add("current");
                     });
-
-                    tabContents.forEach(function (content) {
-                        content.classList.remove("current");
-                    });
-
-                    // Добавляем класс "current" для активной вкладки и её содержимого
-                    this.classList.add("current");
-                    document.querySelector(this.getAttribute("data-tab")).classList.add("current");
                 });
             });
-        });
-        // Функция для открытия модального окна
-        function showModal(orderId) {
-            document.getElementById('modal').style.display = 'flex';
-            document.getElementById('hiddenOrderId').value = orderId;
-        }
+            // Функция для открытия модального окна
+            function showModal(orderId) {
+                document.getElementById('modal').style.display = 'flex';
+                document.getElementById('hiddenOrderId').value = orderId;
+            }
 
-        // Функция для закрытия модального окна
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-        }
-    </script>
-</div>
+            // Функция для закрытия модального окна
+            function closeModal() {
+                document.getElementById('modal').style.display = 'none';
+            }
+        </script>
+    </div>
 </body>
 </html>

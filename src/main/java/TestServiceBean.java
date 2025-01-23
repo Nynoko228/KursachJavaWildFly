@@ -416,4 +416,20 @@ public class TestServiceBean {
         return query.getResultList();
     }
 
+    public Order getFullOrderDetails(Long orderId) {
+        return entityManager.createQuery(
+                        "SELECT o FROM Order o " +
+                                "LEFT JOIN FETCH o.orderItems i " +
+                                "LEFT JOIN FETCH i.game " +
+                                "LEFT JOIN FETCH o.user u " + // Загружаем пользователя, связанного с заказом
+                                "WHERE o.order_id = :id", Order.class)
+                .setParameter("id", orderId)
+                .getSingleResult();
+    }
+
+    public boolean canViewOrder(Order order, User user) {
+        return user.getRole().getRole_name().equals("director")
+                || order.getUser().getUser_id().equals(user.getUser_id());
+    }
+
 }

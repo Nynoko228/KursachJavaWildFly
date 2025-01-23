@@ -9,7 +9,7 @@
         .header {
             background-color: #007bff;
             color: white;
-            padding: 10px;
+            padding: 20px;
             text-align: center;
             position: fixed;  /* Фиксируем хедер */
             top: 0;           /* Прижимаем к верхнему краю */
@@ -19,7 +19,7 @@
             height: 100px;
         }
         .main-content {
-            padding-top: 110px;  /* Отступ = высота хедера + дополнительные пиксели */
+            padding-top: 130px;  /* Отступ = высота хедера + дополнительные пиксели */
             padding-left: 20px;
             padding-right: 20px;
         }
@@ -38,11 +38,14 @@
         .header h1 a:hover {
             text-decoration: none !important;
         }
+        .header__title {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>
+        <h1 class="header__title">
             <a href="${pageContext.request.contextPath}/games">Магазин игр</a>
         </h1>
         <a href="${pageContext.request.contextPath}/home">Главная</a>

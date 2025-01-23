@@ -6,12 +6,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Профиль</title>
+    <jsp:include page="header.jsp"/>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
             background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
         }
         .content {
             display: flex;
@@ -54,7 +58,6 @@
     </style>
 </head>
 <body>
-    <jsp:include page="header.jsp" />
     <div class="main-content">
         <div class="content">
             <div class="container">
