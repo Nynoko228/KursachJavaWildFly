@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
 @WebServlet("/profile/orderDetails")
 public class OrderDetailsServlet extends HttpServlet {
@@ -21,15 +22,19 @@ public class OrderDetailsServlet extends HttpServlet {
             Long orderId = Long.parseLong(req.getParameter("orderId"));
             Order order = orderService.getFullOrderDetails(orderId);
 
+            Long bonusTimestamp = Long.parseLong(req.getParameter("bonusDate"));
+            Date bonusDate = new Date(bonusTimestamp);
+
             // Проверка прав доступа
             User currentUser = (User) req.getSession().getAttribute("user");
-            System.out.println("USER!!!: " + currentUser);
             if (!orderService.canViewOrder(order, currentUser)) {
                 resp.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
 
             req.setAttribute("order", order);
+            req.setAttribute("empl", req.getParameter("empl"));
+            req.setAttribute("bonusDate", bonusDate);
             req.getRequestDispatcher("/orderDetails.jsp").forward(req, resp);
 
         } catch (NumberFormatException e) {
