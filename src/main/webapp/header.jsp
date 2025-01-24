@@ -41,6 +41,10 @@
         .header__title {
             margin-bottom: 10px;
         }
+        .main-content h1 {
+            text-align: center;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
