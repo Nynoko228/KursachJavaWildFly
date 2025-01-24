@@ -438,4 +438,54 @@ public class TestServiceBean {
             throw new RuntimeException("Ошибка при добавлении игры", e);
         }
     }
+
+    // Получение уникальных жанров
+    public List<String> getUniqueGenres() {
+        return entityManager.createQuery(
+                "SELECT DISTINCT g.genre FROM Game g ORDER BY g.genre",
+                String.class
+        ).getResultList();
+    }
+
+    // Получение уникальных разработчиков
+    public List<String> getUniqueDevelopers() {
+        return entityManager.createQuery(
+                "SELECT DISTINCT g.developer FROM Game g ORDER BY g.developer",
+                String.class
+        ).getResultList();
+    }
+
+    // Получение минимального года релиза
+    public int getMinReleaseYear() {
+        return entityManager.createQuery(
+                "SELECT MIN(YEAR(g.release_date)) FROM Game g",
+                Integer.class
+        ).getSingleResult();
+    }
+
+    // Получение максимального года релиза
+    public int getMaxReleaseYear() {
+        return entityManager.createQuery(
+                "SELECT MAX(YEAR(g.release_date)) FROM Game g",
+                Integer.class
+        ).getSingleResult();
+    }
+
+    // Получение минимальной цены
+    public double getMinPrice() {
+        Double result = entityManager.createQuery(
+                "SELECT MIN(CAST(g.cost AS double)) FROM Game g",
+                Double.class
+        ).getSingleResult();
+        return result != null ? result : 0.0;
+    }
+
+    // Получение максимальной цены
+    public double getMaxPrice() {
+        Double result = entityManager.createQuery(
+                "SELECT MAX(CAST(g.cost AS double)) FROM Game g",
+                Double.class
+        ).getSingleResult();
+        return result != null ? result : 0.0;
+    }
 }

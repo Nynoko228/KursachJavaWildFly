@@ -28,7 +28,24 @@ public class GamesTableServlet extends HttpServlet {
 //            List<Game> games = em.createQuery("SELECT g FROM Game g", Game.class).getResultList();
             List<Game> games = testServiceBean.getAllGames();
             System.out.println("Список игр size: " + games.size());
+            // Получаем данные для фильтров
+            List<String> genres = testServiceBean.getUniqueGenres();
+            List<String> developers = testServiceBean.getUniqueDevelopers();
+            int minYear = testServiceBean.getMinReleaseYear();
+            int maxYear = testServiceBean.getMaxReleaseYear();
+            double minPrice = testServiceBean.getMinPrice();
+            double maxPrice = testServiceBean.getMaxPrice();
+
+            System.out.println("MIN_PRICE: " + minPrice);
+            System.out.println("MAX_PRICE: " + maxPrice);
+
             request.setAttribute("games", games);
+            request.setAttribute("genres", genres);
+            request.setAttribute("developers", developers);
+            request.setAttribute("minYear", minYear);
+            request.setAttribute("maxYear", maxYear);
+            request.setAttribute("minPrice", minPrice);
+            request.setAttribute("maxPrice", maxPrice);
             request.getRequestDispatcher("/games_table.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();

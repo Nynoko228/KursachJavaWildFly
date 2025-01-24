@@ -42,6 +42,7 @@ public class AddGameServlet extends HttpServlet {
 
             // Создание объекта игры
             Game newGame = new Game(name, new java.sql.Date(releaseDate.getTime()), developer, genre, cost);
+
             System.out.println("NEWGAME: " + newGame);
 
             // Сохранение в БД

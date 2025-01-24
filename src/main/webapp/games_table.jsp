@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -136,6 +137,61 @@
         .sidebar-overlay.active {
             display: block;
         }
+        .filter-section {
+            margin-bottom: 20px;
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            margin-top: 5px;
+        }
+
+        .range-container {
+            position: relative;
+            height: 30px;
+        }
+
+        .range-slider {
+            width: 100%;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            pointer-events: all;
+        }
+
+        .range-labels {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .apply-button, .reset-button {
+            flex: 1;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .apply-button {
+            background: #28a745;
+            color: white;
+        }
+
+        .reset-button {
+            background: #dc3545;
+            color: white;
         }
     </style>
 </head>
@@ -189,7 +245,59 @@
             </c:if>
         </div>
         <div class="sidebar" id="sidebar">
-            <h2>Привет</h2>
+            <h2>Фильтры</h2>
+            <div class="filter-section">
+                <label>Жанр:</label>
+                <select class="filter-select" id="genreFilter">
+                    <option value="">Все</option>
+                    <c:forEach items="${genres}" var="genre">
+                        <option value="${genre}">${genre}</option>
+                    </c:forEach>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <label>Разработчик:</label>
+                <select class="filter-select" id="developerFilter">
+                    <option value="">Все</option>
+                    <c:forEach items="${developers}" var="dev">
+                        <option value="${dev}">${dev}</option>
+                    </c:forEach>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <label>Год выпуска:</label>
+                <div class="range-labels">
+                    <span id="minYearValue">${minYear}</span> -
+                    <span id="maxYearValue">${maxYear}</span>
+                </div>
+                <div class="range-container">
+                    <input type="range" id="yearMin" min="${minYear}" max="${maxYear}"
+                           value="${minYear}" class="range-slider">
+                    <input type="range" id="yearMax" min="${minYear}" max="${maxYear}"
+                           value="${maxYear}" class="range-slider">
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <label>Цена:</label>
+                <div class="range-labels">
+                    <span id="minPriceValue"><fmt:formatNumber value="${minPrice}" type="currency"/></span> -
+                    <span id="maxPriceValue"><fmt:formatNumber value="${maxPrice}" type="currency"/></span>
+                </div>
+                <div class="range-container">
+                    <input type="range" id="priceMin" min="${minPrice}" max="${maxPrice}"
+                           value="${minPrice}" step="0.01" class="range-slider">
+                    <input type="range" id="priceMax" min="${minPrice}" max="${maxPrice}"
+                           value="${maxPrice}" step="0.01" class="range-slider">
+                </div>
+            </div>
+
+            <div class="filter-buttons">
+                <button class="apply-button" onclick="applyFilters()">Применить</button>
+                <button class="reset-button" onclick="resetFilters()">Сбросить</button>
+            </div>
         </div>
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <script>
@@ -238,6 +346,65 @@
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
             })
+            // Фильтры
+            function applyFilters() {
+                    const genre = document.getElementById('genreFilter').value;
+                    const developer = document.getElementById('developerFilter').value;
+                    const yearMin = parseInt(document.getElementById('yearMin').value);
+                    const yearMax = parseInt(document.getElementById('yearMax').value);
+                    const priceMin = parseFloat(document.getElementById('priceMin').value);
+                    const priceMax = parseFloat(document.getElementById('priceMax').value);
+
+                    const rows = document.querySelectorAll('#gamesTableBody tr');
+
+                    rows.forEach(row => {
+                        const gameYear = new Date(row.cells[3].textContent).getFullYear();
+                        const gamePrice = parseFloat(row.cells[4].textContent);
+
+                        const matchGenre = !genre || row.cells[1].textContent === genre;
+                        const matchDeveloper = !developer || row.cells[2].textContent === developer;
+                        const matchYear = gameYear >= yearMin && gameYear <= yearMax;
+                        const matchPrice = gamePrice >= priceMin && gamePrice <= priceMax;
+
+                        row.style.display = (matchGenre && matchDeveloper && matchYear && matchPrice) ? '' : 'none';
+                    });
+                }
+
+                // Сброс фильтров
+                function resetFilters() {
+                    document.getElementById('genreFilter').value = '';
+                    document.getElementById('developerFilter').value = '';
+                    document.getElementById('yearMin').value = ${minYear};
+                    document.getElementById('yearMax').value = ${maxYear};
+                    document.getElementById('priceMin').value = ${minPrice};
+                    document.getElementById('priceMax').value = ${maxPrice};
+                    updateRangeLabels();
+                    applyFilters();
+                }
+
+                // Обновление значений диапазонов
+                function updateRangeLabels() {
+                    document.getElementById('minYearValue').textContent = document.getElementById('yearMin').value;
+                    document.getElementById('maxYearValue').textContent = document.getElementById('yearMax').value;
+
+                    document.getElementById('minPriceValue').textContent =
+                        parseFloat(document.getElementById('priceMin').value).toFixed(2);
+                    document.getElementById('maxPriceValue').textContent =
+                        parseFloat(document.getElementById('priceMax').value).toFixed(2);
+                }
+
+                // Инициализация обработчиков для ползунков
+                document.querySelectorAll('.range-slider').forEach(slider => {
+                    slider.addEventListener('input', () => {
+                        updateRangeLabels();
+                        applyFilters();
+                    });
+                });
+
+                // Инициализация обработчиков для селектов
+                document.querySelectorAll('.filter-select').forEach(select => {
+                    select.addEventListener('change', applyFilters);
+                });
         </script>
     </div>
 </body>
