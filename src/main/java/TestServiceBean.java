@@ -78,7 +78,7 @@ public class TestServiceBean {
         entityManager.remove(user);
     }
 
-    public List<User> getAllUsers() {
+    public synchronized List<User> getAllUsers() {
         Query nativeQuery = entityManager.createNativeQuery(
                 "SELECT * FROM users", User.class);
 //        nativeQuery.setParameter("id", id);
