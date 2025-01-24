@@ -2,15 +2,14 @@ import org.hibernate.Hibernate;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionManagement;
-import javax.ejb.TransactionManagementType;
+import javax.ejb.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.concurrent.Future;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.transaction.Transactional;
@@ -117,7 +116,7 @@ public class TestServiceBean {
         entityManager.merge(user);
     }
 
-    public List<Game> getAllGames() {
+    public synchronized List<Game> getAllGames() {
         Query nativeQuery = entityManager.createNativeQuery(
                 "SELECT * FROM games", Game.class);
 //        nativeQuery.setParameter("id", id);
