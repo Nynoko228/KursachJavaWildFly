@@ -137,6 +137,33 @@
         .modal-message {
             margin-bottom: 20px;
         }
+        .orders-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .order-wrapper {
+            transition: all 0.3s ease;
+        }
+
+        .filter-section {
+            margin: 15px 0;
+            padding: 10px;
+            background: #fff;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .order-wrapper {
+            display: block; /* Важно! */
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body>
@@ -151,72 +178,85 @@
 
         <!-- Вкладка "Мои заказы" -->
         <div id="tab-1" class="tab-content current">
+            <div class="filter-section">
+                <label>Фильтр по статусу:</label>
+                <select id="statusFilter" class="filter-select">
+                    <option value="">Все статусы</option>
+                    <c:forEach var="status" items="${allStatuses}">
+                        <option value="${status.name()}">${status.status}</option>
+                    </c:forEach>
+                </select>
+            </div>
             <c:if test="${not empty userOrders}">
-                <c:forEach var="order" items="${userOrders}">
-                    <!-- Отображение заказов текущего пользователя -->
-                    <table class="order-table">
-                        <thead>
-                            <tr>
-                                <th colspan="7">Заказ <c:out value="${order.order_id}" /> от <c:out value="${order.order_date}" /></th>
-                            </tr>
-                            <tr>
-                                <th>Название</th>
-                                <th>Жанр</th>
-                                <th>Разработчик</th>
-                                <th>Дата релиза</th>
-                                <th>Цена</th>
-                                <th>Количество</th>
-                                <th>Стоимость</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Переменная для общей стоимости заказа -->
-                            <c:set var="totalCost" value="0" />
-                            <c:forEach var="orderItem" items="${order.orderItems}">
-                                <c:set var="game" value="${orderItem.game}" />
-                                <c:set var="quantity" value="${orderItem.quantity}" />
-                                <c:set var="itemCost" value="${orderItem.price * quantity}" />
-                                <c:set var="totalCost" value="${totalCost + itemCost}" />
-                                <tr>
-                                    <td><c:out value="${game.name}" /></td>
-                                    <td><c:out value="${game.genre}" /></td>
-                                    <td><c:out value="${game.developer}" /></td>
-                                    <td><c:out value="${game.release_date}" /></td>
-                                    <td><c:out value="${orderItem.price}" /></td>
-                                    <td><c:out value="${quantity}" /></td>
-                                    <td><c:out value="${itemCost}" /></td>
-                                </tr>
-                            </c:forEach>
-                            <!-- Отображение общей стоимости заказа после всех товаров -->
-                            <tr>
-                                <td colspan="6" align="right"><strong>Общая стоимость:</strong></td>
-                                <td><strong><c:out value="${totalCost}" /></strong></td>
-                            </tr>
-                            <!-- Код для получения заказа -->
-                            <tr>
-                                <td colspan="7" align="right"><strong>Код для получения заказа:</strong> <c:out value="${decryptedOrderCodes[order.order_id]}" /></td>
-                            </tr>
-                            <!-- Отображение статуса заказа -->
-                            <tr>
-                                <td colspan="7" align="right"><strong>Статус заказа:</strong> <c:out value="${order.status.status}" /></td>
-                            </tr>
-                            <!-- Форма для изменения статуса заказа -->
-                            <c:if test="${not empty availableStatuses}">
-                                <form action="${pageContext.request.contextPath}/updateOrderStatus" method="GET">
-                                    <input type="hidden" name="orderId" value="${order.order_id}" />
-                                    <td colspan="7" align="right">
-                                        <select name="newStatus">
-                                            <c:forEach var="status" items="${availableStatuses}">
-                                                <option value="${status}">${status.status}</option>
-                                            </c:forEach>
-                                        </select>
-                                        <button type="submit">Обновить статус</button>
-                                    </td>
-                                </form>
-                            </c:if>
-                        </tbody>
-                    </table>
-                </c:forEach>
+                <div class="orders-container">
+                    <c:forEach var="order" items="${userOrders}">
+                        <div class="order-wrapper" data-status="${order.status.name()}">
+                            <!-- Отображение заказов текущего пользователя -->
+                            <table class="order-table">
+                                <thead>
+                                    <tr>
+                                        <th colspan="7">Заказ <c:out value="${order.order_id}" /> от <c:out value="${order.order_date}" /></th>
+                                    </tr>
+                                    <tr>
+                                        <th>Название</th>
+                                        <th>Жанр</th>
+                                        <th>Разработчик</th>
+                                        <th>Дата релиза</th>
+                                        <th>Цена</th>
+                                        <th>Количество</th>
+                                        <th>Стоимость</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Переменная для общей стоимости заказа -->
+                                    <c:set var="totalCost" value="0" />
+                                    <c:forEach var="orderItem" items="${order.orderItems}">
+                                        <c:set var="game" value="${orderItem.game}" />
+                                        <c:set var="quantity" value="${orderItem.quantity}" />
+                                        <c:set var="itemCost" value="${orderItem.price * quantity}" />
+                                        <c:set var="totalCost" value="${totalCost + itemCost}" />
+                                        <tr>
+                                            <td><c:out value="${game.name}" /></td>
+                                            <td><c:out value="${game.genre}" /></td>
+                                            <td><c:out value="${game.developer}" /></td>
+                                            <td><c:out value="${game.release_date}" /></td>
+                                            <td><c:out value="${orderItem.price}" /></td>
+                                            <td><c:out value="${quantity}" /></td>
+                                            <td><c:out value="${itemCost}" /></td>
+                                        </tr>
+                                    </c:forEach>
+                                    <!-- Отображение общей стоимости заказа после всех товаров -->
+                                    <tr>
+                                        <td colspan="6" align="right"><strong>Общая стоимость:</strong></td>
+                                        <td><strong><c:out value="${totalCost}" /></strong></td>
+                                    </tr>
+                                    <!-- Код для получения заказа -->
+                                    <tr>
+                                        <td colspan="7" align="right"><strong>Код для получения заказа:</strong> <c:out value="${decryptedOrderCodes[order.order_id]}" /></td>
+                                    </tr>
+                                    <!-- Отображение статуса заказа -->
+                                    <tr>
+                                        <td colspan="7" align="right"><strong>Статус заказа:</strong> <c:out value="${order.status.status}" /></td>
+                                    </tr>
+                                    <!-- Форма для изменения статуса заказа -->
+                                    <c:if test="${not empty availableStatuses}">
+                                        <form action="${pageContext.request.contextPath}/updateOrderStatus" method="GET">
+                                            <input type="hidden" name="orderId" value="${order.order_id}" />
+                                            <td colspan="7" align="right">
+                                                <select name="newStatus">
+                                                    <c:forEach var="status" items="${availableStatuses}">
+                                                        <option value="${status}">${status.status}</option>
+                                                    </c:forEach>
+                                                </select>
+                                                <button type="submit">Обновить статус</button>
+                                            </td>
+                                        </form>
+                                    </c:if>
+                                </tbody>
+                            </table>
+                        </div>
+                    </c:forEach>
+                </div>
             </c:if>
             <c:if test="${empty userOrders}">
                 <p>У вас нет заказов.</p>
@@ -226,76 +266,89 @@
         <!-- Вкладка "Остальные заказы" -->
         <c:if test="${userRole eq 'employee' or userRole eq 'director'}">
             <div id="tab-2" class="tab-content">
+                <div class="filter-section">
+                    <label>Фильтр по статусу:</label>
+                    <select id="otherStatusFilter" class="filter-select">
+                        <option value="">Все статусы</option>
+                        <c:forEach var="status" items="${allStatuses}">
+                            <option value="${status.name()}">${status.status}</option>
+                        </c:forEach>
+                    </select>
+                </div>
                 <c:if test="${not empty otherOrders}">
-                    <c:forEach var="order" items="${otherOrders}">
-                        <!-- Отображение заказов других пользователей -->
-                        <table class="order-table">
-                            <thead>
-                                <tr>
-                                    <th colspan="7">Заказ <c:out value="${order.order_id}" /> от <c:out value="${order.order_date}" /></th>
-                                </tr>
-                                <tr>
-                                    <th>Название</th>
-                                    <th>Жанр</th>
-                                    <th>Разработчик</th>
-                                    <th>Дата релиза</th>
-                                    <th>Цена</th>
-                                    <th>Количество</th>
-                                    <th>Стоимость</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Переменная для общей стоимости заказа -->
-                                <c:set var="totalCost" value="0" />
-                                <c:forEach var="orderItem" items="${order.orderItems}">
-                                    <c:set var="game" value="${orderItem.game}" />
-                                    <c:set var="quantity" value="${orderItem.quantity}" />
-                                    <c:set var="itemCost" value="${orderItem.price * quantity}" />
-                                    <c:set var="totalCost" value="${totalCost + itemCost}" />
-                                    <tr>
-                                        <td><c:out value="${game.name}" /></td>
-                                        <td><c:out value="${game.genre}" /></td>
-                                        <td><c:out value="${game.developer}" /></td>
-                                        <td><c:out value="${game.release_date}" /></td>
-                                        <td><c:out value="${orderItem.price}" /></td>
-                                        <td><c:out value="${quantity}" /></td>
-                                        <td><c:out value="${itemCost}" /></td>
-                                    </tr>
-                                </c:forEach>
-                                <!-- Отображение общей стоимости заказа после всех товаров -->
-                                <tr>
-                                    <td colspan="6" align="right"><strong>Общая стоимость:</strong></td>
-                                    <td><strong><c:out value="${totalCost}" /></strong></td>
-                                </tr>
-                                <!-- Отображение статуса заказа -->
-                                <tr>
-                                    <td colspan="7" align="right"><strong>Статус заказа:</strong> <c:out value="${order.status.status}" /></td>
-                                </tr>
-                                <!-- Форма для изменения статуса заказа -->
-                                <c:if test="${not empty availableStatuses}">
-                                    <form action="${pageContext.request.contextPath}/updateOrderStatus" method="GET">
-                                        <input type="hidden" name="orderId" value="${order.order_id}" />
-                                        <td colspan="7" align="right">
-                                            <select name="newStatus">
-                                                <c:forEach var="status" items="${availableStatuses}">
-                                                    <option value="${status}">${status.status}</option>
-                                                </c:forEach>
-                                            </select>
-                                            <button type="submit">Обновить статус</button>
-                                        </td>
-                                    </form>
-                                </c:if>
-                                <!-- Кнопка "Отдать заказ" -->
-                                <c:if test="${order.status eq 'READY_FOR_PICKUP'}">
-                                    <tr>
-                                        <td colspan="7" align="center">
-                                            <button class="deliver-order-button" data-order-id="${order.order_id}" onclick="showModal('${order.order_id}')">Отдать заказ</button>
-                                        </td>
-                                    </tr>
-                                </c:if>
-                            </tbody>
-                        </table>
-                    </c:forEach>
+                    <div class="orders-container">
+                        <c:forEach var="order" items="${otherOrders}">
+                            <div class="order-wrapper" data-status="${order.status.name()}">
+                                <!-- Отображение заказов других пользователей -->
+                                <table class="order-table">
+                                    <thead>
+                                        <tr>
+                                            <th colspan="7">Заказ <c:out value="${order.order_id}" /> от <c:out value="${order.order_date}" /></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Название</th>
+                                            <th>Жанр</th>
+                                            <th>Разработчик</th>
+                                            <th>Дата релиза</th>
+                                            <th>Цена</th>
+                                            <th>Количество</th>
+                                            <th>Стоимость</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Переменная для общей стоимости заказа -->
+                                        <c:set var="totalCost" value="0" />
+                                        <c:forEach var="orderItem" items="${order.orderItems}">
+                                            <c:set var="game" value="${orderItem.game}" />
+                                            <c:set var="quantity" value="${orderItem.quantity}" />
+                                            <c:set var="itemCost" value="${orderItem.price * quantity}" />
+                                            <c:set var="totalCost" value="${totalCost + itemCost}" />
+                                            <tr>
+                                                <td><c:out value="${game.name}" /></td>
+                                                <td><c:out value="${game.genre}" /></td>
+                                                <td><c:out value="${game.developer}" /></td>
+                                                <td><c:out value="${game.release_date}" /></td>
+                                                <td><c:out value="${orderItem.price}" /></td>
+                                                <td><c:out value="${quantity}" /></td>
+                                                <td><c:out value="${itemCost}" /></td>
+                                            </tr>
+                                        </c:forEach>
+                                        <!-- Отображение общей стоимости заказа после всех товаров -->
+                                        <tr>
+                                            <td colspan="6" align="right"><strong>Общая стоимость:</strong></td>
+                                            <td><strong><c:out value="${totalCost}" /></strong></td>
+                                        </tr>
+                                        <!-- Отображение статуса заказа -->
+                                        <tr>
+                                            <td colspan="7" align="right"><strong>Статус заказа:</strong> <c:out value="${order.status.status}" /></td>
+                                        </tr>
+                                        <!-- Форма для изменения статуса заказа -->
+                                        <c:if test="${not empty availableStatuses}">
+                                            <form action="${pageContext.request.contextPath}/updateOrderStatus" method="GET">
+                                                <input type="hidden" name="orderId" value="${order.order_id}" />
+                                                <td colspan="7" align="right">
+                                                    <select name="newStatus">
+                                                        <c:forEach var="status" items="${availableStatuses}">
+                                                            <option value="${status}">${status.status}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                    <button type="submit">Обновить статус</button>
+                                                </td>
+                                            </form>
+                                        </c:if>
+                                        <!-- Кнопка "Отдать заказ" -->
+                                        <c:if test="${order.status eq 'READY_FOR_PICKUP'}">
+                                            <tr>
+                                                <td colspan="7" align="center">
+                                                    <button class="deliver-order-button" data-order-id="${order.order_id}" onclick="showModal('${order.order_id}')">Отдать заказ</button>
+                                                </td>
+                                            </tr>
+                                        </c:if>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </c:forEach>
+                    </div>
                 </c:if>
                 <c:if test="${empty otherOrders}">
                     <p>Нет заказов других пользователей.</p>
@@ -358,5 +411,34 @@
             }
         </script>
     </div>
+   <script>
+   document.addEventListener("DOMContentLoaded", function () {
+       // Функция фильтрации заказов по статусу
+       function filterOrders(containerSelector, status) {
+           const orders = document.querySelectorAll(`${containerSelector} .order-wrapper`);
+           orders.forEach(order => {
+               const orderStatus = order.dataset.status; // Получаем статус из data-status
+               const shouldShow = !status || orderStatus === status; // Проверяем, нужно ли показывать заказ
+               order.style.display = shouldShow ? 'block' : 'none'; // Показываем или скрываем заказ
+           });
+       }
+
+       // Обработчики для фильтров
+       document.querySelectorAll('.filter-select').forEach(select => {
+           select.addEventListener('change', function () {
+               const tabContent = this.closest('.tab-content'); // Находим вкладку, к которой относится фильтр
+               const containerSelector = `#${tabContent.id} .orders-container`; // Получаем контейнер заказов в текущей вкладке
+               const selectedStatus = this.value; // Получаем выбранный статус
+               filterOrders(containerSelector, selectedStatus); // Применяем фильтрацию
+           });
+       });
+
+       // Инициализация фильтров при загрузке страницы (сразу фильтруем)
+       document.querySelectorAll('.filter-select').forEach(select => {
+           select.dispatchEvent(new Event('change'));
+       });
+   });
+   </script>
+
 </body>
 </html>

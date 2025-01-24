@@ -65,6 +65,8 @@ public class ProfileOrdersServlet extends HttpServlet {
             request.setAttribute("errorMessage", "Для просмотра заказов необходимо авторизоваться.");
         }
 
+        List<OrderStatus> allStatuses = Arrays.asList(OrderStatus.values());
+        request.setAttribute("allStatuses", allStatuses);
         // Перенаправляем на страницу с заказами
         request.getRequestDispatcher("/profile_orders.jsp").forward(request, response);
     }
