@@ -23,9 +23,6 @@ public class Game {
     @Column(nullable = false) // Цена не может быть пустой
     private Double cost; // Изменили тип на Double
 
-//    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private Set<Purchase> purchases;
-
     public Game() {
         // Пустой конструктор необходим для JPA
     }
@@ -86,12 +83,4 @@ public class Game {
     public void setCost(Double cost) {
         this.cost = cost;
     }
-
-//    public Set<Purchase> getPurchases() {
-//        return purchases;
-//    }
-//
-//    public void setPurchases(Set<Purchase> purchases) {
-//        this.purchases = purchases;
-//    }
 }

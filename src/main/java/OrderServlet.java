@@ -30,6 +30,7 @@ public class OrderServlet extends HttpServlet {
                 String orderMessage = testServiceBean.createOrder(user.getUser_id());
                 request.setAttribute("orderMessage", orderMessage);
                 System.out.println("Order Created Succsesfull");
+                request.setAttribute("cartSuccessful", "Заказ успешно оформлен");
             } else {
                 request.setAttribute("errorMessage", "Пользователь не найден.");
             }

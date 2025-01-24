@@ -63,7 +63,6 @@ public class CartServlet extends HttpServlet {
 
             request.setAttribute("cartItems", cartItems);
             System.out.println("cartItems: " + cartItems);
-
             request.getRequestDispatcher("/cart.jsp").forward(request, response);
         } catch (Exception e) {
             System.out.println("Exce: " + e);

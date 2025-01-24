@@ -36,9 +36,6 @@ public class GamesTableServlet extends HttpServlet {
             double minPrice = testServiceBean.getMinPrice();
             double maxPrice = testServiceBean.getMaxPrice();
 
-            System.out.println("MIN_PRICE: " + minPrice);
-            System.out.println("MAX_PRICE: " + maxPrice);
-
             request.setAttribute("games", games);
             request.setAttribute("genres", genres);
             request.setAttribute("developers", developers);

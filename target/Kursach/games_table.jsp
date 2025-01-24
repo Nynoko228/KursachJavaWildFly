@@ -373,179 +373,179 @@
             })
             // Фильтры
             function applyFilters() {
-                    const genre = document.getElementById('genreFilter').value;
-                    const developer = document.getElementById('developerFilter').value;
-                    const yearMin = parseInt(document.getElementById('yearMin').value);
-                    const yearMax = parseInt(document.getElementById('yearMax').value);
-                    const priceMin = parseFloat(document.getElementById('priceMin').value);
-                    const priceMax = parseFloat(document.getElementById('priceMax').value);
+                const genre = document.getElementById('genreFilter').value;
+                const developer = document.getElementById('developerFilter').value;
+                const yearMin = parseInt(document.getElementById('yearMin').value);
+                const yearMax = parseInt(document.getElementById('yearMax').value);
+                const priceMin = parseFloat(document.getElementById('priceMin').value);
+                const priceMax = parseFloat(document.getElementById('priceMax').value);
 
-                    const rows = document.querySelectorAll('#gamesTableBody tr');
+                const rows = document.querySelectorAll('#gamesTableBody tr');
 
-                    rows.forEach(row => {
-                        const gameYear = new Date(row.cells[3].textContent).getFullYear();
-                        const gamePrice = parseFloat(row.cells[4].textContent);
+                rows.forEach(row => {
+                    const gameYear = new Date(row.cells[3].textContent).getFullYear();
+                    const gamePrice = parseFloat(row.cells[4].textContent);
 
-                        const matchGenre = !genre || row.cells[1].textContent === genre;
-                        const matchDeveloper = !developer || row.cells[2].textContent === developer;
-                        const matchYear = gameYear >= yearMin && gameYear <= yearMax;
-                        const matchPrice = gamePrice >= priceMin && gamePrice <= priceMax;
+                    const matchGenre = !genre || row.cells[1].textContent === genre;
+                    const matchDeveloper = !developer || row.cells[2].textContent === developer;
+                    const matchYear = gameYear >= yearMin && gameYear <= yearMax;
+                    const matchPrice = gamePrice >= priceMin && gamePrice <= priceMax;
 
-                        row.style.display = (matchGenre && matchDeveloper && matchYear && matchPrice) ? '' : 'none';
-                    });
+                    row.style.display = (matchGenre && matchDeveloper && matchYear && matchPrice) ? '' : 'none';
+                });
+            }
+
+            // Сброс фильтров
+            function resetFilters() {
+                document.getElementById('genreFilter').value = '';
+                document.getElementById('developerFilter').value = '';
+                document.getElementById('yearMin').value = ${minYear};
+                document.getElementById('yearMax').value = ${maxYear};
+                document.getElementById('priceMin').value = ${minPrice};
+                document.getElementById('priceMax').value = ${maxPrice};
+                updateRangeLabels();
+                applyFilters();
+            }
+
+            // Обновление значений диапазонов
+            function updateRangeLabels() {
+                // Для года
+                const yearMin = document.getElementById('yearMin').value;
+                const yearMax = document.getElementById('yearMax').value;
+                document.getElementById('yearMinInput').value = yearMin;
+                document.getElementById('yearMaxInput').value = yearMax;
+                document.getElementById('minYearValue').textContent = yearMin;
+                document.getElementById('maxYearValue').textContent = yearMax;
+
+                // Для цены
+                const priceMin = parseFloat(document.getElementById('priceMin').value).toFixed(2);
+                const priceMax = parseFloat(document.getElementById('priceMax').value).toFixed(2);
+
+                // Обновляем текстовые поля
+                document.getElementById('priceMinInput').value = priceMin;
+                document.getElementById('priceMaxInput').value = priceMax;
+
+                // Обновляем отображаемые значения в сайдбаре
+                document.getElementById('minPriceValue').textContent = priceMin;
+                document.getElementById('maxPriceValue').textContent = priceMax;
+            }
+
+            function validateNumberInput(input, min, max, isMin, pairedInput, slider) {
+                let value = parseFloat(input.value);
+
+                // Если не число, устанавливаем минимальное/максимальное значение
+                if (isNaN(value)) {
+                    value = isMin ? min : max;
                 }
 
-                // Сброс фильтров
-                function resetFilters() {
-                    document.getElementById('genreFilter').value = '';
-                    document.getElementById('developerFilter').value = '';
-                    document.getElementById('yearMin').value = ${minYear};
-                    document.getElementById('yearMax').value = ${maxYear};
-                    document.getElementById('priceMin').value = ${minPrice};
-                    document.getElementById('priceMax').value = ${maxPrice};
-                    updateRangeLabels();
-                    applyFilters();
+                // Ограничение значений
+                value = Math.min(Math.max(value, min), max);
+
+                // Синхронизация с парным полем
+                if (isMin && value > parseFloat(pairedInput.value)) {
+                    pairedInput.value = value;
+                    pairedInput.dispatchEvent(new Event('change'));
+                } else if (!isMin && value < parseFloat(pairedInput.value)) {
+                    pairedInput.value = value;
+                    pairedInput.dispatchEvent(new Event('change'));
                 }
 
-                // Обновление значений диапазонов
-                function updateRangeLabels() {
-                    // Для года
-                    const yearMin = document.getElementById('yearMin').value;
-                    const yearMax = document.getElementById('yearMax').value;
-                    document.getElementById('yearMinInput').value = yearMin;
-                    document.getElementById('yearMaxInput').value = yearMax;
-                    document.getElementById('minYearValue').textContent = yearMin;
-                    document.getElementById('maxYearValue').textContent = yearMax;
+                // Обновление значения
+                input.value = isMin ? Math.floor(value) : Math.ceil(value);
+                slider.value = value;
+            }
 
-                    // Для цены
-                    const priceMin = parseFloat(document.getElementById('priceMin').value).toFixed(2);
-                    const priceMax = parseFloat(document.getElementById('priceMax').value).toFixed(2);
+            // Специфичные валидации
+            function validateYear(input, isMin) {
+                const minYear = ${minYear};
+                const maxYear = ${maxYear};
+                const pairedInput = isMin ? document.getElementById('yearMaxInput') : document.getElementById('yearMinInput');
+                const slider = isMin ? document.getElementById('yearMin') : document.getElementById('yearMax');
+                validateNumberInput(input, minYear, maxYear, isMin, pairedInput, slider);
+            }
 
-                    // Обновляем текстовые поля
-                    document.getElementById('priceMinInput').value = priceMin;
-                    document.getElementById('priceMaxInput').value = priceMax;
+            function validatePrice(input, isMin) {
+                const minPrice = ${minPrice};
+                const maxPrice = ${maxPrice};
+                const pairedInput = isMin ? document.getElementById('priceMaxInput') : document.getElementById('priceMinInput');
+                const slider = isMin ? document.getElementById('priceMin') : document.getElementById('priceMax');
+                const value = parseFloat(input.value);
 
-                    // Обновляем отображаемые значения в сайдбаре
-                    document.getElementById('minPriceValue').textContent = priceMin;
-                    document.getElementById('maxPriceValue').textContent = priceMax;
-                }
-
-                function validateNumberInput(input, min, max, isMin, pairedInput, slider) {
-                    let value = parseFloat(input.value);
-
-                    // Если не число, устанавливаем минимальное/максимальное значение
-                    if (isNaN(value)) {
-                        value = isMin ? min : max;
-                    }
-
-                    // Ограничение значений
-                    value = Math.min(Math.max(value, min), max);
-
-                    // Синхронизация с парным полем
-                    if (isMin && value > parseFloat(pairedInput.value)) {
-                        pairedInput.value = value;
-                        pairedInput.dispatchEvent(new Event('change'));
-                    } else if (!isMin && value < parseFloat(pairedInput.value)) {
-                        pairedInput.value = value;
-                        pairedInput.dispatchEvent(new Event('change'));
-                    }
-
-                    // Обновление значения
-                    input.value = isMin ? Math.floor(value) : Math.ceil(value);
+                if (!isNaN(value)) {
+                    input.value = value.toFixed(2);
                     slider.value = value;
                 }
+                validateNumberInput(input, minPrice, maxPrice, isMin, pairedInput, slider);
+            }
 
-                // Специфичные валидации
-                function validateYear(input, isMin) {
-                    const minYear = ${minYear};
-                    const maxYear = ${maxYear};
-                    const pairedInput = isMin ? document.getElementById('yearMaxInput') : document.getElementById('yearMinInput');
-                    const slider = isMin ? document.getElementById('yearMin') : document.getElementById('yearMax');
-                    validateNumberInput(input, minYear, maxYear, isMin, pairedInput, slider);
-                }
+            // Обработчики для полей года
+            document.getElementById('yearMinInput').addEventListener('change', function() {
+                validateYear(this, true);
+                updateRangeLabels();
+                applyFilters();
+            });
 
-                function validatePrice(input, isMin) {
-                    const minPrice = ${minPrice};
-                    const maxPrice = ${maxPrice};
-                    const pairedInput = isMin ? document.getElementById('priceMaxInput') : document.getElementById('priceMinInput');
-                    const slider = isMin ? document.getElementById('priceMin') : document.getElementById('priceMax');
-                    const value = parseFloat(input.value);
+            document.getElementById('yearMaxInput').addEventListener('change', function() {
+                validateYear(this, false);
+                updateRangeLabels();
+                applyFilters();
+            });
 
-                    if (!isNaN(value)) {
-                        input.value = value.toFixed(2);
-                        slider.value = value;
+            // Обработчики для полей цены
+            document.getElementById('priceMinInput').addEventListener('change', function() {
+                validatePrice(this, true);
+                updateRangeLabels();
+                applyFilters();
+            });
+
+            document.getElementById('priceMaxInput').addEventListener('change', function() {
+                validatePrice(this, false);
+                updateRangeLabels();
+                applyFilters();
+            });
+
+            // Обработчики для ползунков
+            document.querySelectorAll('.range-slider').forEach(slider => {
+                slider.addEventListener('input', function() {
+                    const isYear = this.id.includes('year');
+                    const isMin = this.id.includes('Min');
+
+                    if (isYear) {
+                        const input = isMin ? document.getElementById('yearMinInput') : document.getElementById('yearMaxInput');
+                        input.value = this.value;
+                        validateYear(input, isMin);
+                    } else {
+                        const input = isMin ? document.getElementById('priceMinInput') : document.getElementById('priceMaxInput');
+                        input.value = parseFloat(this.value).toFixed(2);
+                        validatePrice(input, isMin);
                     }
-                    validateNumberInput(input, minPrice, maxPrice, isMin, pairedInput, slider);
-                }
 
-    // Обработчики для полей года
-    document.getElementById('yearMinInput').addEventListener('change', function() {
-        validateYear(this, true);
-        updateRangeLabels();
-        applyFilters();
-    });
-
-    document.getElementById('yearMaxInput').addEventListener('change', function() {
-        validateYear(this, false);
-        updateRangeLabels();
-        applyFilters();
-    });
-
-    // Обработчики для полей цены
-    document.getElementById('priceMinInput').addEventListener('change', function() {
-        validatePrice(this, true);
-        updateRangeLabels();
-        applyFilters();
-    });
-
-    document.getElementById('priceMaxInput').addEventListener('change', function() {
-        validatePrice(this, false);
-        updateRangeLabels();
-        applyFilters();
-    });
-
-    // Обработчики для ползунков
-    document.querySelectorAll('.range-slider').forEach(slider => {
-        slider.addEventListener('input', function() {
-            const isYear = this.id.includes('year');
-            const isMin = this.id.includes('Min');
-
-            if (isYear) {
-                const input = isMin ? document.getElementById('yearMinInput') : document.getElementById('yearMaxInput');
-                input.value = this.value;
-                validateYear(input, isMin);
-            } else {
-                const input = isMin ? document.getElementById('priceMinInput') : document.getElementById('priceMaxInput');
-                input.value = parseFloat(this.value).toFixed(2);
-                validatePrice(input, isMin);
-            }
-
-            updateRangeLabels();
-            applyFilters();
-        });
-    });
-
-    // Запрет ввода нечисловых значений
-    document.querySelectorAll('.range-input').forEach(input => {
-        input.addEventListener('keypress', function(e) {
-            const allowedChars = /[0-9\.]/;
-            const isPrice = this.id.includes('price');
-
-            if (isPrice && this.value.includes('.') && e.key === '.') {
-                e.preventDefault();
-            }
-
-            if (!allowedChars.test(e.key) ||
-                (isPrice && this.value.split('.')[1]?.length >= 2)) {
-                e.preventDefault();
-            }
-        });
-    });
-
-                // Инициализация обработчиков для селектов
-                document.querySelectorAll('.filter-select').forEach(select => {
-                    select.addEventListener('change', applyFilters);
+                    updateRangeLabels();
+                    applyFilters();
                 });
+            });
+
+            // Запрет ввода нечисловых значений
+            document.querySelectorAll('.range-input').forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    const allowedChars = /[0-9\.]/;
+                    const isPrice = this.id.includes('price');
+
+                    if (isPrice && this.value.includes('.') && e.key === '.') {
+                        e.preventDefault();
+                    }
+
+                    if (!allowedChars.test(e.key) ||
+                        (isPrice && this.value.split('.')[1]?.length >= 2)) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            // Инициализация обработчиков для селектов
+            document.querySelectorAll('.filter-select').forEach(select => {
+                select.addEventListener('change', applyFilters);
+            });
 
         </script>
     </div>
