@@ -249,10 +249,7 @@
                                 <td><c:out value="${game.release_date}" /></td>
                                 <td><c:out value="${game.cost}" /></td>
                                 <td>
-                                    <form action="${pageContext.request.contextPath}/games" method="post" style="display:inline;">
-                                        <input type="hidden" name="gameId" value="${game.id}">
-                                        <button class="buy-button" type="submit">Купить</button>
-                                    </form>
+                                    <button class="buy-button" onclick="addToCart(${game.id})">В корзину</button>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -549,5 +546,23 @@
 
         </script>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    function addToCart(gameId) {
+        $.ajax({
+            url: "${pageContext.request.contextPath}/games",
+            type: "POST",
+            data: { gameId: gameId },
+            success: function(response) {
+                // Здесь можно добавить действия после успешного добавления в корзину
+                alert("Товар добавлен в корзину!");
+            },
+            error: function(xhr, status, error) {
+                // Здесь можно добавить действия при ошибке
+                alert("Произошла ошибка при добавлении товара в корзину.");
+            }
+        });
+    }
+    </script>
 </body>
 </html>

@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
@@ -123,8 +124,34 @@ public class CartServlet extends HttpServlet {
             // Перезагружаем страницу корзины
             doGet(request, response);
         } else {
-            // Обработка других действий, если необходимо
-            doGet(request, response);
+            Long gameId = Long.parseLong(request.getParameter("gameId"));
+            if (principal != null) {
+                // Добавление игры в корзину пользователя в базе данных
+                User user = testServiceBean.getAllUsers().stream()
+                        .filter(u -> u.getUser_name().equals(principal.getName()))
+                        .findFirst()
+                        .orElse(null);
+                if (user != null) {
+                    testServiceBean.addToCart(gameId, user.getUser_id());
+                }
+            } else {
+                // Добавление игры в корзину в сессии
+                if (session != null) {
+                    Map<Long, Integer> cart = (Map<Long, Integer>) session.getAttribute("cart");
+                    if (cart == null) {
+                        cart = new HashMap<>();
+                    }
+                    cart.put(gameId, cart.getOrDefault(gameId, 0) + 1);
+                    session.setAttribute("cart", cart);
+                }
+            }
+
+            // Отправляем ответ клиенту
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            PrintWriter out = response.getWriter();
+            out.print("{\"success\": true}");
+            out.flush();
         }
     }
 }
