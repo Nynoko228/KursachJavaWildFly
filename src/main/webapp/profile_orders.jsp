@@ -148,21 +148,44 @@
         }
 
         .filter-section {
-            margin: 15px 0;
-            padding: 10px;
-            background: #fff;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            width: 70vw;
+            margin-left: auto;
+            margin-right: auto;
+            align-items: center;
         }
 
         .filter-select {
             padding: 8px 12px;
             border-radius: 4px;
             border: 1px solid #ddd;
+            height: 40px;
         }
         .order-wrapper {
             display: block; /* Важно! */
             transition: opacity 0.3s ease;
+        }
+        .search-input {
+            font-family: Arial, sans-serif;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            padding: 10px 20px;
+            width: 40%;
+            margin: 0;
+            box-sizing: border-box;
+            display: block;
+            outline: none;
+            transition: all 0.3s ease;
+            flex: 1; /* Занимает доступное пространство */
+            max-width: 100%;
+            height: 40px;
+        }
+        .search-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0,123,255,0.3);
         }
     </style>
 </head>
@@ -179,7 +202,13 @@
         <!-- Вкладка "Мои заказы" -->
         <div id="tab-1" class="tab-content current">
             <div class="filter-section">
-                <label>Фильтр по статусу:</label>
+                <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Поиск по названию..."
+                    onkeyup="filterGames()"
+                    id="searchInput"
+                >
                 <select id="statusFilter" class="filter-select">
                     <option value="">Все статусы</option>
                     <c:forEach var="status" items="${allStatuses}">
@@ -267,7 +296,13 @@
         <c:if test="${userRole eq 'employee' or userRole eq 'director'}">
             <div id="tab-2" class="tab-content">
                 <div class="filter-section">
-                    <label>Фильтр по статусу:</label>
+                    <input
+                        type="text"
+                        class="search-input"
+                        placeholder="Поиск по названию..."
+                        onkeyup="filterGames()"
+                        id="searchInput"
+                    >
                     <select id="otherStatusFilter" class="filter-select">
                         <option value="">Все статусы</option>
                         <c:forEach var="status" items="${allStatuses}">
@@ -411,34 +446,52 @@
             }
         </script>
     </div>
-   <script>
-   document.addEventListener("DOMContentLoaded", function () {
-       // Функция фильтрации заказов по статусу
-       function filterOrders(containerSelector, status) {
-           const orders = document.querySelectorAll(`${containerSelector} .order-wrapper`);
-           orders.forEach(order => {
-               const orderStatus = order.dataset.status; // Получаем статус из data-status
-               const shouldShow = !status || orderStatus === status; // Проверяем, нужно ли показывать заказ
-               order.style.display = shouldShow ? 'block' : 'none'; // Показываем или скрываем заказ
-           });
-       }
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Функция фильтрации заказов по статусу и номеру
+    function filterOrders(containerSelector, status, searchQuery) {
+        const orders = document.querySelectorAll(`${containerSelector} .order-wrapper`);
+        orders.forEach(order => {
+            const orderStatus = order.dataset.status; // Получаем статус из data-status
+            const headerText = order.querySelector('.order-table thead tr th').textContent; // Текст заголовка таблицы
+            const orderIdMatch = headerText.match(/Заказ\s(\d+)\sот/); // Извлекаем только номер заказа
+            const orderId = orderIdMatch ? orderIdMatch[1] : ""; // Берем номер заказа, если найден
+            const matchesStatus = !status || orderStatus === status; // Проверка фильтра по статусу
+            const matchesSearch = !searchQuery || orderId.includes(searchQuery); // Проверка фильтра по номеру заказа
+            const shouldShow = matchesStatus && matchesSearch; // Условие отображения
+            order.style.display = shouldShow ? 'block' : 'none'; // Показываем или скрываем заказ
+        });
+    }
 
-       // Обработчики для фильтров
-       document.querySelectorAll('.filter-select').forEach(select => {
-           select.addEventListener('change', function () {
-               const tabContent = this.closest('.tab-content'); // Находим вкладку, к которой относится фильтр
-               const containerSelector = `#${tabContent.id} .orders-container`; // Получаем контейнер заказов в текущей вкладке
-               const selectedStatus = this.value; // Получаем выбранный статус
-               filterOrders(containerSelector, selectedStatus); // Применяем фильтрацию
-           });
-       });
+    // Обработчики для фильтров по статусу
+    document.querySelectorAll('.filter-select').forEach(select => {
+        select.addEventListener('change', function () {
+            const tabContent = this.closest('.tab-content'); // Находим текущую вкладку
+            const containerSelector = `#${tabContent.id} .orders-container`; // Контейнер заказов в текущей вкладке
+            const selectedStatus = this.value; // Выбранный статус
+            const searchQuery = tabContent.querySelector('.search-input')?.value.trim(); // Строка поиска
+            filterOrders(containerSelector, selectedStatus, searchQuery); // Фильтруем
+        });
+    });
 
-       // Инициализация фильтров при загрузке страницы (сразу фильтруем)
-       document.querySelectorAll('.filter-select').forEach(select => {
-           select.dispatchEvent(new Event('change'));
-       });
-   });
-   </script>
+    // Обработчики для поиска по номеру заказа
+    document.querySelectorAll('.search-input').forEach(input => {
+        input.addEventListener('keyup', function () {
+            const tabContent = this.closest('.tab-content'); // Текущая вкладка
+            const containerSelector = `#${tabContent.id} .orders-container`; // Контейнер заказов
+            const searchQuery = this.value.trim(); // Строка поиска
+            const selectedStatus = tabContent.querySelector('.filter-select')?.value; // Выбранный статус
+            filterOrders(containerSelector, selectedStatus, searchQuery); // Фильтруем
+        });
+    });
+
+    // Инициализация фильтров при загрузке страницы
+    document.querySelectorAll('.filter-select, .search-input').forEach(element => {
+        element.dispatchEvent(new Event('change'));
+    });
+});
+</script>
+
 
 </body>
 </html>
