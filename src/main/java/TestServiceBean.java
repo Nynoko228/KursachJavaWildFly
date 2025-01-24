@@ -1,3 +1,5 @@
+import org.hibernate.Hibernate;
+
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.ejb.Stateless;
@@ -11,6 +13,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import javax.transaction.Transactional;
 
 @Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)
@@ -88,9 +91,30 @@ public class TestServiceBean {
         return nativeQuery.getResultList();
     }
 
-    // Метод для получения заказа по ID
+//    public Optional<Order> findOrderById(Long orderId) {
+//        try {
+//            Order order = entityManager.createQuery(
+//                            "SELECT o FROM Order o " +
+//                                    "LEFT JOIN FETCH o.user " + // Загрузка пользователя
+//                                    "LEFT JOIN FETCH o.orderItems oi " + // Загрузка элементов заказа
+//                                    "LEFT JOIN FETCH oi.game " + // Загрузка игр из OrderItem
+//                                    "WHERE o.order_id = :orderId", Order.class)
+//                    .setParameter("orderId", orderId)
+//                    .getSingleResult();
+//            return Optional.of(order);
+//        } catch (NoResultException e) {
+//            return Optional.empty();
+//        }
+//    }
+    // Просто решил использовать Hibernate.initialize() для того, чтобы показать как с ней работать
     public Optional<Order> findOrderById(Long orderId) {
-        return Optional.ofNullable(entityManager.find(Order.class, orderId));
+        Order order = entityManager.find(Order.class, orderId);
+        if (order != null) {
+            Hibernate.initialize(order.getUser()); // Инициализация пользователя
+            Hibernate.initialize(order.getOrderItems()); // Инициализация элементов заказа
+            order.getOrderItems().forEach(item -> Hibernate.initialize(item.getGame())); // Инициализация игр
+        }
+        return Optional.ofNullable(order);
     }
 
     // Метод для получения роли пользователя по ID
@@ -407,10 +431,18 @@ public class TestServiceBean {
     }
 
     // Метод для получения всех премий
+//    public List<Bonus> getAllBonuses() {
+//        TypedQuery<Bonus> query = entityManager.createQuery(
+//                "SELECT b FROM Bonus b JOIN FETCH b.employee JOIN FETCH b.order", Bonus.class);
+//        return query.getResultList();
+//    }
+    @Transactional
     public List<Bonus> getAllBonuses() {
-        TypedQuery<Bonus> query = entityManager.createQuery(
-                "SELECT b FROM Bonus b JOIN FETCH b.employee JOIN FETCH b.order", Bonus.class);
-        return query.getResultList();
+        return entityManager.createQuery(
+                        "SELECT b FROM Bonus b " +
+                                "JOIN FETCH b.order o " +
+                                "JOIN FETCH b.employee e", Bonus.class)
+                .getResultList();
     }
 
     public Order getFullOrderDetails(Long orderId) {

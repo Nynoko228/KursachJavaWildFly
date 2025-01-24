@@ -13,7 +13,7 @@ import java.util.Optional;
 public class OrderDetailsServlet extends HttpServlet {
 
     @Inject
-    private TestServiceBean orderService;
+    private TestServiceBean testServiceBean;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -22,7 +22,7 @@ public class OrderDetailsServlet extends HttpServlet {
         try {
             Long orderId = Long.parseLong(req.getParameter("orderId"));
 //            Order order = orderService.getFullOrderDetails(orderId);
-            Optional<Order> orderOptional = orderService.findOrderById(orderId);
+            Optional<Order> orderOptional = testServiceBean.findOrderById(orderId);
             if (orderOptional.isPresent()) {
                 Order order = orderOptional.get();
                 Long bonusTimestamp = Long.parseLong(req.getParameter("bonusDate"));
@@ -30,7 +30,7 @@ public class OrderDetailsServlet extends HttpServlet {
 
                 // Проверка прав доступа
                 User currentUser = (User) req.getSession().getAttribute("user");
-                if (!orderService.canViewOrder(order, currentUser)) {
+                if (!testServiceBean.canViewOrder(order, currentUser)) {
                     resp.sendError(HttpServletResponse.SC_FORBIDDEN);
                     return;
                 }

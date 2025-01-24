@@ -142,7 +142,7 @@
                                 <tr>
                                     <th>Сотрудник</th>
                                     <th>Номер заказа</th>
-                                    <th>Сумма бонусов</th>
+                                    <th>Величина премии</th>
                                     <th>Дата получения</th>
                                 </tr>
                             </thead>
@@ -183,7 +183,6 @@
             </div>
         </div>
     </div>
-</body>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.clickable-row').forEach(row => {
@@ -198,4 +197,5 @@
         });
     });
 </script>
+</body>
 </html>

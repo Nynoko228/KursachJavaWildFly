@@ -102,9 +102,11 @@
             </h3>
         </div>
 
-        <a href="${pageContext.request.contextPath}/profile/bonuses" class="button">
-            ← Назад к списку премий
-        </a>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="${pageContext.request.contextPath}/profile/bonuses" class="button">
+                ← Назад к списку премий
+            </a>
+        </div>
     </div>
 </body>
 </html>
