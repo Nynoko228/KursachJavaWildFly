@@ -5,6 +5,7 @@ Role.class
 BaseServlet.class
 UpdateOrderStatusServlet.class
 User.class
+AllUsersServlet.class
 AddGameServlet.class
 DeliverOrderServlet.class
 CartItem.class

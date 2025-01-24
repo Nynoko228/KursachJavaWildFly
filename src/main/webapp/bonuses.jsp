@@ -153,6 +153,7 @@
                                                      <c:param name="orderId" value="${bonus.order.order_id}"/>
                                                      <c:param name="bonusDate" value="${bonus.bonus_date.time}"/>
                                                      <c:param name="empl" value="${bonus.employee.user_name}"/>
+                                                     <c:param name="bonusId" value="${bonus.bonus_id}"/>
                                                    </c:url>">
                                             <td><c:out value="${bonus.employee.user_name}" /></td>
                                             <td><c:out value="${bonus.order.order_id}" /></td>

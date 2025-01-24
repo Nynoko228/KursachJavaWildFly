@@ -17,6 +17,15 @@
   </login-config>
   <security-constraint>
     <web-resource-collection>
+      <web-resource-name>All profiles</web-resource-name>
+      <url-pattern>/profile/allprofiles</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>director</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
       <web-resource-name>Add Game</web-resource-name>
       <url-pattern>/addGame</url-pattern>
     </web-resource-collection>

@@ -15,6 +15,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.transaction.Transactional;
 
+// Используем Stateless иначе будут дубликаты в БД
 @Stateless
 @TransactionManagement(TransactionManagementType.CONTAINER)
 public class TestServiceBean {
@@ -84,6 +85,38 @@ public class TestServiceBean {
 //        nativeQuery.setParameter("id", id);
         return nativeQuery.getResultList();
     }
+
+    public List<Role> getAllRoles() {
+        Query nativeQuery = entityManager.createNativeQuery(
+                "SELECT * FROM roles", Role.class);
+//        nativeQuery.setParameter("id", id);
+        return nativeQuery.getResultList();
+    }
+
+    public User getUserById(Long userId) {
+        User user = entityManager.find(User.class, userId);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+        return user;
+    }
+
+    public void updateUserRole(Long userId, Long roleId) {
+        User user = getUserById(userId);
+        Role newRole = entityManager.find(Role.class, roleId);
+
+        if (newRole == null) {
+            throw new EntityNotFoundException("Role not found");
+        }
+
+        if ("director".equals(user.getRole().getRole_name())) {
+            throw new SecurityException("Cannot change director's role");
+        }
+
+        user.setRole(newRole);
+        entityManager.merge(user);
+    }
+
     public List<Game> getAllGames() {
         Query nativeQuery = entityManager.createNativeQuery(
                 "SELECT * FROM games", Game.class);
@@ -116,6 +149,24 @@ public class TestServiceBean {
         }
         return Optional.ofNullable(order);
     }
+
+    public Optional<Bonus> findBonusById(Long bonusId) {
+        try {
+            return Optional.ofNullable(
+                    entityManager.createQuery(
+                                    "SELECT b FROM Bonus b " +
+                                            "LEFT JOIN FETCH b.employee " +
+                                            "LEFT JOIN FETCH b.order " +
+                                            "WHERE b.bonus_id = :id", Bonus.class)
+                            .setParameter("id", bonusId)
+                            .getSingleResult()
+            );
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+
 
     // Метод для получения роли пользователя по ID
     public Role getUserRole(Long userId) {
@@ -416,14 +467,20 @@ public class TestServiceBean {
                                 "WHERE o.id = :orderId", Order.class)
                 .setParameter("orderId", orderId)
                 .getSingleResult();
+
         // Рассчитываем общую стоимость заказа
         BigDecimal totalCost = order.getOrderItems().stream()
                 .map(orderItem -> BigDecimal.valueOf(orderItem.getPrice())  // Преобразуем цену в BigDecimal
                         .multiply(BigDecimal.valueOf(orderItem.getQuantity()))) // Умножаем на количество
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
+        // Определяем процент премии
+        BigDecimal bonusPercent = employee.getBonusPercentage() != null
+                ? BigDecimal.valueOf(employee.getBonusPercentage()).divide(BigDecimal.valueOf(100))
+                : new BigDecimal("0.05");
+
         // Рассчитываем премию (5% от стоимости заказа)
-        BigDecimal bonusAmount = totalCost.multiply(new BigDecimal("0.05"));
+        BigDecimal bonusAmount = totalCost.multiply(bonusPercent);
 
         // Создаем новую премию
         Bonus bonus = new Bonus(employee, order, bonusAmount, new Date());
@@ -495,6 +552,13 @@ public class TestServiceBean {
         ).getSingleResult();
     }
 
+    public User getUserByUsername(String username) {
+        return entityManager.createQuery(
+                        "SELECT u FROM User u WHERE u.user_name = :username", User.class)
+                .setParameter("username", username)
+                .getSingleResult();
+    }
+
     // Получение максимального года релиза
     public int getMaxReleaseYear() {
         return entityManager.createQuery(
@@ -519,5 +583,14 @@ public class TestServiceBean {
                 Double.class
         ).getSingleResult();
         return result != null ? result : 0.0;
+    }
+
+    public void updateUserBonus(Long userId, Integer bonusPercentage) {
+        User user = getUserById(userId);
+        if (!Arrays.asList("employee", "director").contains(user.getRole().getRole_name())) {
+            throw new IllegalArgumentException("Премия доступна только сотрудникам");
+        }
+        user.setBonusPercentage(bonusPercentage);
+        entityManager.merge(user);
     }
 }

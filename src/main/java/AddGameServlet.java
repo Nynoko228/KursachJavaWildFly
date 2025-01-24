@@ -16,7 +16,7 @@ import java.util.Date;
 public class AddGameServlet extends HttpServlet {
 
     @Inject
-    private TestServiceBean gameService;
+    private TestServiceBean testServiceBean;
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -46,7 +46,7 @@ public class AddGameServlet extends HttpServlet {
             System.out.println("NEWGAME: " + newGame);
 
             // Сохранение в БД
-            gameService.addGame(newGame);
+            testServiceBean.addGame(newGame);
 
             // Перенаправление с сообщением об успехе
             session.setAttribute("successAddGame", "Игра успешно добавлена");

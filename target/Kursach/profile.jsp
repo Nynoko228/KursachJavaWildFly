@@ -68,8 +68,11 @@
                 <a href="${pageContext.request.contextPath}/cart" class="button">Корзина</a>
                 <a href="${pageContext.request.contextPath}/profile/orders" class="button">Заказы</a>
                 <c:if test="${userRole eq 'director'}">
-                    <a href="${pageContext.request.contextPath}/profile/bonuses" class="button">Премии сотрудников</a>
-                    <button class="button" onclick="openAddGameModal()">Добавить игру</button>
+                    <div>
+                        <a href="${pageContext.request.contextPath}/profile/bonuses" class="button">Премии сотрудников</a>
+                        <a href="${pageContext.request.contextPath}/profile/allprofiles" class="button">Список пользователей</a>
+                        <button class="button" onclick="openAddGameModal()">Добавить игру</button>
+                    </div>
                 </c:if>
                 <!-- Форма для выхода из системы -->
                 <form action="${pageContext.request.contextPath}/logout" method="POST">

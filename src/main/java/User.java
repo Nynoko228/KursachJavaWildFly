@@ -14,6 +14,11 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+
+
+    @Column(name = "bonus_percentage")
+    private Integer bonusPercentage;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     private Role role;
@@ -26,10 +31,11 @@ public class User {
 
     public User() {}
 
-    public User(String user_name, String password, Role role) {
+    public User(String user_name, String password, Role role, Integer bonusPercentage) {
         this.user_name = user_name;
         this.password = password;
         this.role = role;
+        this.bonusPercentage = bonusPercentage;
     }
 
     // Геттеры и сеттеры
@@ -63,6 +69,14 @@ public class User {
 
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public void setBonusPercentage(Integer bonusPercentage) {
+        this.bonusPercentage = bonusPercentage;
+    }
+
+    public Integer getBonusPercentage() {
+        return bonusPercentage;
     }
 
 //    public Set<Purchase> getPurchases() {

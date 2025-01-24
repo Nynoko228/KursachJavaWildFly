@@ -62,14 +62,15 @@
             <p><strong>Дата оформления:</strong>
                 <fmt:formatDate value="${order.order_date}" pattern="dd.MM.yyyy"/>
             </p>
+            <p><strong>Клиент:</strong> ${order.user.user_name}</p>
+            <p><strong>Статус:</strong> ${order.status.status}</p>
             <c:if test="${order.status.status eq 'Выдан'}">
                 <p><strong>Дата выдачи:</strong>
-                    <fmt:formatDate value="${bonusDate}" pattern="dd.MM.yyyy HH:mm"/>
+                    <fmt:formatDate value="${bonus.bonus_date}" pattern="dd.MM.yyyy HH:mm"/>
                 </p>
-                <p><strong>Выдан работником:</strong> ${empl}</p>
+                <p><strong>Выдан работником:</strong> ${bonus.employee.user_name}</p>
+                <p><strong>Премия:</strong> ${bonus.amount}</p>
             </c:if>
-            <p><strong>Статус:</strong> ${order.status.status}</p>
-            <p><strong>Клиент:</strong> ${order.user.user_name}</p>
         </div>
 
         <h2>Состав заказа:</h2>

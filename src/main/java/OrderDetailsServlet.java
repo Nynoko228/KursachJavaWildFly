@@ -25,8 +25,18 @@ public class OrderDetailsServlet extends HttpServlet {
             Optional<Order> orderOptional = testServiceBean.findOrderById(orderId);
             if (orderOptional.isPresent()) {
                 Order order = orderOptional.get();
-                Long bonusTimestamp = Long.parseLong(req.getParameter("bonusDate"));
-                Date bonusDate = new Date(bonusTimestamp);
+                String employeeUsername = req.getParameter("empl");
+
+                // Получаем бонусный процент сотрудника
+                Integer bonusPercentage = 5; // значение по умолчанию
+                try {
+                    User employee = testServiceBean.getUserByUsername(employeeUsername);
+                    bonusPercentage = employee.getBonusPercentage() != null
+                            ? employee.getBonusPercentage()
+                            : 5;
+                } catch (Exception e) {
+                    req.setAttribute("errorMessage", "Ошибка");
+                }
 
                 // Проверка прав доступа
                 User currentUser = (User) req.getSession().getAttribute("user");
@@ -36,8 +46,13 @@ public class OrderDetailsServlet extends HttpServlet {
                 }
 
                 req.setAttribute("order", order);
-                req.setAttribute("empl", req.getParameter("empl"));
-                req.setAttribute("bonusDate", bonusDate);
+                Long bonusId = Long.parseLong(req.getParameter("bonusId"));
+                Optional<Bonus> bonus = testServiceBean.findBonusById(bonusId);
+                if (bonus.isPresent()) {
+                    req.setAttribute("bonus", bonus.get());
+                } else {
+                    req.setAttribute("errorMessage", "Премия не найдена");
+                }
                 req.getRequestDispatcher("/orderDetails.jsp").forward(req, resp);
             }
 
