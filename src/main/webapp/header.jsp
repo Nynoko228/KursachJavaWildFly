@@ -51,6 +51,7 @@
         <a href="${pageContext.request.contextPath}/home">Главная</a>
         <a href="${pageContext.request.contextPath}/profile">Мои профиль</a>
         <a href="${pageContext.request.contextPath}/profile/orders">Мои заказы</a>
+        <a href="${pageContext.request.contextPath}/cart">Корзина</a>
     </div>
 </body>
 </html>

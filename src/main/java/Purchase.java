@@ -1,8 +1,8 @@
 import javax.persistence.*;
 import java.sql.Date;
 
-@Entity
-@Table(name = "purchases")
+//@Entity
+//@Table(name = "purchases")
 public class Purchase {
 
     @Id

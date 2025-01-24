@@ -3,10 +3,7 @@ import javax.crypto.SecretKey;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionManagement;
 import javax.ejb.TransactionManagementType;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -432,4 +429,13 @@ public class TestServiceBean {
                 || order.getUser().getUser_id().equals(user.getUser_id());
     }
 
+    public void addGame(Game newGame) {
+        try {
+            entityManager.persist(newGame); // Сохраняем игру в базе данных
+            entityManager.flush();       // Принудительно синхронизируем с БД
+        } catch (PersistenceException e) {
+            // Обработка ошибок сохранения
+            throw new RuntimeException("Ошибка при добавлении игры", e);
+        }
+    }
 }

@@ -69,6 +69,7 @@
                 <a href="${pageContext.request.contextPath}/profile/orders" class="button">Заказы</a>
                 <c:if test="${userRole eq 'director'}">
                     <a href="${pageContext.request.contextPath}/profile/bonuses" class="button">Премии сотрудников</a>
+                    <button class="button" onclick="openAddGameModal()">Добавить игру</button>
                 </c:if>
                 <!-- Форма для выхода из системы -->
                 <form action="${pageContext.request.contextPath}/logout" method="POST">
@@ -77,5 +78,6 @@
             </div>
         </div>
     </div>
+    <jsp:include page="addGameModal.jsp"/>
 </body>
 </html>

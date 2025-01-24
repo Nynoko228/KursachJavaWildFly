@@ -26,6 +26,11 @@
             border-radius: 8px; /* Закругленные края */
             position: relative;
             text-align: center; /* Центрирование текста */
+            animation: modalSlide 0.3s ease-out;
+        }
+        @keyframes modalSlide {
+            from {transform: translateY(-100px); opacity: 0;}
+            to {transform: translateY(0); opacity: 1;}
         }
 
         .close {

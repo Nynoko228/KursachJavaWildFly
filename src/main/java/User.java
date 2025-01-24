@@ -18,8 +18,8 @@ public class User {
     @JoinColumn(name = "role_id", referencedColumnName = "role_id", nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Purchase> purchases;
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private Set<Purchase> purchases;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Cart cart;
@@ -65,13 +65,13 @@ public class User {
         this.role = role;
     }
 
-    public Set<Purchase> getPurchases() {
-        return purchases;
-    }
-
-    public void setPurchases(Set<Purchase> purchases) {
-        this.purchases = purchases;
-    }
+//    public Set<Purchase> getPurchases() {
+//        return purchases;
+//    }
+//
+//    public void setPurchases(Set<Purchase> purchases) {
+//        this.purchases = purchases;
+//    }
 
     public Cart getCart() {
         return cart;

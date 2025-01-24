@@ -1,6 +1,5 @@
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.Set;
 
 @Entity
 @Table(name = "games") // Название таблицы в БД
@@ -24,8 +23,8 @@ public class Game {
     @Column(nullable = false) // Цена не может быть пустой
     private Double cost; // Изменили тип на Double
 
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Purchase> purchases;
+//    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    private Set<Purchase> purchases;
 
     public Game() {
         // Пустой конструктор необходим для JPA
@@ -88,11 +87,11 @@ public class Game {
         this.cost = cost;
     }
 
-    public Set<Purchase> getPurchases() {
-        return purchases;
-    }
-
-    public void setPurchases(Set<Purchase> purchases) {
-        this.purchases = purchases;
-    }
+//    public Set<Purchase> getPurchases() {
+//        return purchases;
+//    }
+//
+//    public void setPurchases(Set<Purchase> purchases) {
+//        this.purchases = purchases;
+//    }
 }

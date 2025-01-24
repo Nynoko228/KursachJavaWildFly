@@ -64,12 +64,17 @@
             margin-top: 20px;
             text-align: center;
         }
+        .main-content h1 {
+            text-align: center;
+            margin: 20px 0;
+        }
+
     </style>
 </head>
 <body>
     <jsp:include page="header.jsp" />
     <jsp:include page="modal.jsp" />
-    <div class="content">
+    <div class="main-content">
         <h1>Корзина</h1>
         <c:if test="${not empty cartItems}">
             <table>
@@ -143,7 +148,7 @@
             </c:if>
         </c:if>
         <c:if test="${empty cartItems}">
-            <p>Корзина пуста.</p>
+            <h1>Корзина пуста.</h1>
             <div class="cart-actions">
                 <a href="${pageContext.request.contextPath}/games" class="button">Продолжить покупки</a>
             </div>
