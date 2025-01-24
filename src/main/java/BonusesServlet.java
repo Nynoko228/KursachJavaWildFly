@@ -1,4 +1,5 @@
 import javax.inject.Inject;
+import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -8,13 +9,28 @@ import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
-@WebServlet("/profile/bonuses")
+@WebServlet(value = "/profile/bonuses", asyncSupported = true)
 public class BonusesServlet extends HttpServlet {
     @Inject
     private TestServiceBean testServiceBean;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        AsyncContext asyncContext = request.startAsync();
+        asyncContext.start(() -> {
+            try {
+                handleRequest(asyncContext);
+            } catch (Exception e) {
+                e.printStackTrace();
+                asyncContext.complete();
+            }
+        });
+    }
+
+    private void handleRequest(AsyncContext asyncContext) throws ServletException, IOException {
+        HttpServletRequest request = (HttpServletRequest) asyncContext.getRequest();
+        HttpServletResponse response = (HttpServletResponse) asyncContext.getResponse();
+
         Principal principal = request.getUserPrincipal();
         if (principal != null) {
             // Получаем пользователя по имени
@@ -30,18 +46,19 @@ public class BonusesServlet extends HttpServlet {
                     List<Bonus> bonuses = testServiceBean.getAllBonuses();
                     request.setAttribute("bonuses", bonuses);
                     // Перенаправляем на страницу с премиями
-                    request.getRequestDispatcher("/bonuses.jsp").forward(request, response);
+                    asyncContext.dispatch("/bonuses.jsp");
                 } else {
                     request.setAttribute("errorMessage", "У вас нет доступа к этой странице.");
-                    request.getRequestDispatcher("/profile/orders").forward(request, response);
+                    asyncContext.dispatch("/profile/orders");
                 }
             } else {
                 request.setAttribute("errorMessage", "Пользователь не найден.");
-                request.getRequestDispatcher("/profile/orders").forward(request, response);
+                asyncContext.dispatch("/profile/orders");
             }
         } else {
             request.setAttribute("errorMessage", "Для просмотра премий необходимо авторизоваться.");
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
+            asyncContext.dispatch("/login.jsp");
         }
+        asyncContext.complete();
     }
 }
