@@ -348,6 +348,25 @@ public class TestServiceBean {
                 return "Корзина пуста. Оформить заказ невозможно.";
             }
 
+            // Удаляем элементы с удаленными играми
+            Set<CartItem> itemsToRemove = new HashSet<>();
+            for (CartItem cartItem : cart.getCartItems()) {
+                Game game = cartItem.getGame();
+                if (game == null || game.isDeleted()) {
+                    itemsToRemove.add(cartItem);
+                }
+            }
+
+            // Удаляем невалидные элементы из корзины
+            if (!itemsToRemove.isEmpty()) {
+                cart.getCartItems().removeAll(itemsToRemove);
+                entityManager.merge(cart); // Обновляем корзину в БД
+            }
+
+            // Проверяем, остались ли товары в корзине после очистки
+            if (cart.getCartItems().isEmpty()) {
+                return "После удаления недоступных товаров корзина пуста.";
+            }
             // Генерируем четырёхзначный код
             String orderCode = generateRandomOrderCode();
 
