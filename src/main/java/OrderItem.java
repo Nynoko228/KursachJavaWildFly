@@ -17,19 +17,26 @@ public class OrderItem {
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
+
+    @JoinColumn(name = "game_name", nullable = false)
+    private String  gameName;
+
+
+    @JoinColumn(name = "price", nullable = false)
+    private Double  price;
+
     @Column(nullable = false)
     private Integer quantity;
 
-    @Column(nullable = false)
-    private Double price;
 
     public OrderItem() {}
 
-    public OrderItem(Order order, Game game, Integer quantity, Double price) {
+    public OrderItem(Order order, Game game, Integer quantity, Double price, String gameName) {
         this.order = order;
         this.game = game;
         this.quantity = quantity;
         this.price = price;
+        this.gameName = gameName;
     }
 
     // Геттеры и сеттеры
@@ -71,5 +78,13 @@ public class OrderItem {
 
     public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
     }
 }

@@ -23,16 +23,20 @@ public class Game {
     @Column(nullable = false) // Цена не может быть пустой
     private Double cost; // Изменили тип на Double
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     public Game() {
         // Пустой конструктор необходим для JPA
     }
 
-    public Game(String name, Date release_date, String developer, String genre, Double cost) {
+    public Game(String name, Date release_date, String developer, String genre, Double cost, Boolean isDeleted) {
         this.name = name;
         this.release_date = release_date;
         this.developer = developer;
         this.genre = genre;
         this.cost = cost;
+        this.isDeleted = isDeleted;
     }
 
     // Геттеры и сеттеры для всех полей
@@ -82,5 +86,13 @@ public class Game {
 
     public void setCost(Double cost) {
         this.cost = cost;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

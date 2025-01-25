@@ -12,6 +12,7 @@ import java.util.*;
 import java.util.concurrent.Future;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 // Используем Stateless иначе будут дубликаты в БД
@@ -365,7 +366,7 @@ public class TestServiceBean {
 
             // Создаем элементы заказа
             for (CartItem cartItem : cart.getCartItems()) {
-                OrderItem orderItem = new OrderItem(order, cartItem.getGame(), cartItem.getQuantity(), cartItem.getGame().getCost());
+                OrderItem orderItem = new OrderItem(order, cartItem.getGame(), cartItem.getQuantity(), cartItem.getGame().getCost(), cartItem.getGame().getName());
                 order.getOrderItems().add(orderItem);
                 entityManager.persist(orderItem);
             }
@@ -591,5 +592,42 @@ public class TestServiceBean {
         }
         user.setBonusPercentage(bonusPercentage);
         entityManager.merge(user);
+    }
+
+    @Transactional
+    public void safeDeleteGame(Long gameId) throws Exception {
+        Game game = entityManager.find(Game.class, gameId);
+        System.out.println("NAME GAME!!!: " + game.getName());
+
+        if (game == null) {
+            throw new Exception("Игра не найдена");
+        }
+
+        List<OrderStatus> statusList = Arrays.asList(
+                OrderStatus.DELIVERED,
+                OrderStatus.CANCELLED
+        );
+
+        // Подсчитываем количество заказов со статусами IN_PROGRESS и READY_FOR_PICKUP
+        Long activeOrders = entityManager.createQuery(
+                        "SELECT COUNT(oi) FROM OrderItem oi " +
+                                "JOIN oi.order o WHERE oi.game = :game " +
+                                "AND o.status NOT IN (:statuses)", Long.class)
+                .setParameter("game", game)
+                .setParameter("statuses", statusList)
+                .getSingleResult();
+
+        if (activeOrders > 0) {
+            throw new IllegalStateException("ACTIVE_ORDERS_ERROR"); // Уникальный идентификатор ошибки
+        }
+
+        game.setDeleted(true);  // Устанавливаем isDeleted в true
+        entityManager.merge(game);  // Обновляем сущность в базе данных
+    }
+
+    public List<Game> getAllActiveGames() {
+        return entityManager.createQuery(
+                        "SELECT g FROM Game g WHERE g.isDeleted = false", Game.class)
+                .getResultList();
     }
 }

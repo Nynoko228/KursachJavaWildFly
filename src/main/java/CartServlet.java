@@ -123,7 +123,7 @@ public class CartServlet extends HttpServlet {
 
             // Перезагружаем страницу корзины
             doGet(request, response);
-        } else {
+        } else if ("add".equals(request.getParameter("action"))) {
             Long gameId = Long.parseLong(request.getParameter("gameId"));
             if (principal != null) {
                 // Добавление игры в корзину пользователя в базе данных

@@ -251,6 +251,14 @@
                                 <td>
                                     <button class="buy-button" onclick="addToCart(${game.id})">В корзину</button>
                                 </td>
+                                <c:if test="${userRole == 'director'}">
+                                    <td>
+                                        <button class="buy-button"
+                                                onclick="deleteGame(${game.id}, this)">
+                                            Удалить
+                                        </button>
+                                    </td>
+                                </c:if>
                             </tr>
                         </c:forEach>
                     </tbody>
@@ -549,20 +557,62 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
     function addToCart(gameId) {
+        if (!gameId) { // Проверка на undefined/null
+            alert("Ошибка: ID игры не определен");
+            return;
+        }
+
         $.ajax({
-            url: "${pageContext.request.contextPath}/games",
+            url: "${pageContext.request.contextPath}/cart", // Исправлен URL
             type: "POST",
-            data: { gameId: gameId },
+            data: {
+                gameId: gameId,
+                action: "add" // Добавлен параметр действия
+            },
             success: function(response) {
-                // Здесь можно добавить действия после успешного добавления в корзину
                 alert("Товар добавлен в корзину!");
             },
-            error: function(xhr, status, error) {
-                // Здесь можно добавить действия при ошибке
-                alert("Произошла ошибка при добавлении товара в корзину.");
+            error: function(xhr) {
+                alert("Ошибка: " + xhr.responseText);
             }
         });
     }
+        function deleteGame(gameId, button) {
+            if (!confirm('Вы уверены, что хотите удалить игру?')) return;
+
+            button.disabled = true;
+            button.textContent = 'Удаление...';
+
+            fetch('${pageContext.request.contextPath}/profile/deleteGame', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'gameId=' + gameId
+            })
+            .then(response => response.json()) // Преобразуем ответ в JSON
+            .then(data => {
+                if (data.status === "success") {
+                    // Удаляем строку из таблицы без перезагрузки
+                    const row = button.closest('tr');
+                    row.style.opacity = '0.5';
+                    row.style.textDecoration = 'line-through';
+                    setTimeout(() => row.remove(), 1000);
+                } else if (data.status === "error" && data.message === "ACTIVE_ORDERS_ERROR") {
+                    // Если ошибка из-за активных заказов
+                    alert('Ошибка: Игра участвует в активных заказах и не может быть удалена.');
+                } else {
+                    throw new Error(data.message); // Иначе показываем сообщение об ошибке
+                }
+            })
+            .catch(error => {
+                alert('Ошибка: Игра участвует в активных заказах и не может быть удалена.');
+            })
+            .finally(() => {
+                button.disabled = false;
+                button.textContent = 'Удалить';
+            });
+        }
     </script>
 </body>
 </html>

@@ -44,7 +44,7 @@ public class GamesTableServlet extends HttpServlet {
 
         try {
             // Получаем список игр
-            List<Game> games = testServiceBean.getAllGames();
+            List<Game> games = testServiceBean.getAllActiveGames();
             System.out.println("Список игр size: " + games.size());
 
             // Получаем данные для фильтров

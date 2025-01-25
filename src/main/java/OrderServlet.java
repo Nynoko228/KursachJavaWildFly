@@ -39,6 +39,6 @@ public class OrderServlet extends HttpServlet {
         }
 
         // Перенаправляем обратно на страницу корзины
-        request.getRequestDispatcher("/cart").forward(request, response);
+        response.sendRedirect(request.getContextPath() + "/cart");
     }
 }

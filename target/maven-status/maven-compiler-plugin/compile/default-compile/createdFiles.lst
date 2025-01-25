@@ -10,6 +10,7 @@ AddGameServlet.class
 DeliverOrderServlet.class
 CartItem.class
 LogoutServlet.class
+DeleteGameServlet.class
 GamesTableServlet.class
 LoginServlet.class
 OrderItem.class

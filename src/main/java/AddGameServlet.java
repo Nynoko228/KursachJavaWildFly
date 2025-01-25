@@ -41,7 +41,7 @@ public class AddGameServlet extends HttpServlet {
             Double cost = Double.parseDouble(req.getParameter("cost"));
 
             // Создание объекта игры
-            Game newGame = new Game(name, new java.sql.Date(releaseDate.getTime()), developer, genre, cost);
+            Game newGame = new Game(name, new java.sql.Date(releaseDate.getTime()), developer, genre, cost, false);
 
             System.out.println("NEWGAME: " + newGame);
 

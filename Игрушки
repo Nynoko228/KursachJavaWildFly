@@ -112,3 +112,7 @@ INSERT INTO games (developer, genre, name, release_date, cost) VALUES
           ('GSC Game World', 'First-person shooter', 'S.T.A.L.K.E.R.: Shadow of Chernobyl', '2007-03-20', 1200),
         ('Bethesda Game Studios', 'RPG', 'Fallout: New Vegas', '2010-10-19', 1500)
 ;
+
+
+ALTER TABLE games
+ADD COLUMN is_deleted BOOLEAN NOT NULL DEFAULT FALSE;
