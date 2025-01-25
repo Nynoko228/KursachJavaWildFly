@@ -94,16 +94,99 @@
             height: 100%;
             overflow: auto;
             background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .modal-content {
             background-color: #fefefe;
-            margin: 15% auto;
-            padding: 10% auto;
-            border: 1px solid #888;
-            width: 30%;
-            border-radius: 8px; /* Закругленные края */
-            position: relative;
-            text-align: center; /* Центрирование текста */
+            padding: 2.5rem;
+            border-radius: 12px;
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-content h3 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: #333;
+        }
+
+        .form-row {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .form-row label {
+            flex: 0 0 120px;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        .form-row input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-row input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .modal-buttons {
+            padding: 10px;
+            display: flex;
+            gap: 1.5rem;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .modal-button {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .modal-button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .modal-button[type="button"] {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .modal-button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
         .close {
             color: #aaa;
@@ -394,17 +477,18 @@
         <!-- Модальное окно -->
         <div id="modal" class="modal" style="display: none;">
             <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
                 <h3>Отдать заказ</h3>
-                <!-- Форма для отправки данных на сервер -->
                 <form id="deliveryForm" action="${pageContext.request.contextPath}/deliverOrder" method="get">
-                    <label for="orderCode">Введите код заказа:</label><br>
-                    <input type="text" id="orderCode" name="code" placeholder="Введите код" required>
-                    <!-- Скрытое поле для передачи ID заказа -->
+                    <div class="form-row">
+                        <label for="orderCode">Код заказа:</label>
+                        <input type="text" id="orderCode" name="code" placeholder="Введите код" required>
+                    </div>
                     <input type="hidden" id="hiddenOrderId" name="orderId">
-                    <br><br>
-                    <button class="modal-button" type="submit">Ввод</button>
-                    <button class="modal-button" type="button" onclick="closeModal()">Назад</button>
+
+                    <div class="modal-buttons">
+                        <button class="modal-button" type="submit">Подтвердить</button>
+                        <button class="modal-button" type="button" onclick="closeModal()">Отмена</button>
+                    </div>
                 </form>
             </div>
         </div>
